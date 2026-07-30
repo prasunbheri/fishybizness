@@ -78,22 +78,27 @@ export default async function ContactPage() {
           </AnimatedSection>
         </div>
 
-        <AnimatedSection delay={0.2} className="h-full">
-          <div className="rounded-xl bg-zinc-100 dark:bg-zinc-800 aspect-[4/3] md:aspect-auto md:h-full min-h-[300px] flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600">
-            <svg className="w-12 h-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-            </svg>
-            <p className="text-sm font-medium">Google Maps</p>
-            <p className="text-xs mt-1">Secunderabad, Telangana 500009</p>
-            <a
-              href={shop.social.googleMaps.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 text-xs text-cyan-500 hover:text-cyan-400 underline underline-offset-2"
-            >
-              Open in Google Maps &rarr;
-            </a>
+        <AnimatedSection delay={0.2} className="h-full flex flex-col">
+          <div className="rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 flex-1 min-h-[320px]">
+            <iframe
+              src="https://www.google.com/maps?q=Shop+No.+5+Vaishnavi+Plaza+Diamond+Point+Rd+Secunderabad+Telangana+500009&output=embed"
+              width="100%"
+              height="100%"
+              style={{ border: 0, minHeight: '320px' }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Fishy Bizness location"
+              className="w-full h-full"
+            />
           </div>
+          <a
+            href={shop.social.googleMaps.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 text-xs text-cyan-500 hover:text-cyan-400 underline underline-offset-2 inline-block"
+          >
+            Open in Google Maps &rarr;
+          </a>
         </AnimatedSection>
       </div>
     </div>
