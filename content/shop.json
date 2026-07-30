@@ -18,6 +18,7 @@
     "instagram": { "url": "https://instagram.com/fishybizness", "label": "@fishybizness" },
     "youtube": { "url": "https://youtube.com/@fishybizness", "label": "FishyBizness Aquatics" },
     "facebook": { "url": "https://facebook.com/fishybizness", "label": "FishyBizness Aquatics" },
+    "whatsapp": { "url": "https://wa.me/5551234567", "label": "Chat on WhatsApp" },
     "googleMaps": { "url": "https://maps.google.com/?q=fishybizness", "label": "Find us on Google" }
   }
 }

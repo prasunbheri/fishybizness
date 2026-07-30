@@ -127,7 +127,7 @@ export default async function Home() {
             Stay up to date with our latest projects, fishroom updates, and aquarium tips on social media.
           </p>
           <div className="flex justify-center gap-6">
-            {['Instagram', 'YouTube', 'Facebook', 'Google'].map((platform) => (
+            {['Instagram', 'YouTube', 'Facebook', 'WhatsApp', 'Google'].map((platform) => (
               <a
                 key={platform}
                 href="#"
