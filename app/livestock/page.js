@@ -2,6 +2,8 @@ import { getLivestock, getLivestockTypes } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
 import LivestockCard from "@/components/LivestockCard"
 
+export const revalidate = 0
+
 export default async function LivestockPage() {
   const [livestock, types] = await Promise.all([
     getLivestock(),

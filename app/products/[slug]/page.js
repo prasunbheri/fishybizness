@@ -2,6 +2,8 @@ import { getProducts, getProduct } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
 import Link from "next/link"
 
+export const revalidate = 0
+
 export async function generateStaticParams() {
   const products = await getProducts()
   return products.map((p) => ({ slug: p.slug }))

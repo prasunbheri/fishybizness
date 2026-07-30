@@ -2,6 +2,8 @@ import { getProducts, getCategories } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
 import ProductCard from "@/components/ProductCard"
 
+export const revalidate = 0
+
 export default async function ProductsPage() {
   const [products, categories] = await Promise.all([
     getProducts(),

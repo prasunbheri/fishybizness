@@ -2,6 +2,8 @@ import { getProjects, getProject } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
 import ProjectDetailClient from "./ProjectDetailClient"
 
+export const revalidate = 0
+
 export async function generateStaticParams() {
   const projects = await getProjects()
   return projects.map((p) => ({ slug: p.slug }))

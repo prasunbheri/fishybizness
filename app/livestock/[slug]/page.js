@@ -2,6 +2,8 @@ import { getLivestock, getLivestockItem } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
 import Link from "next/link"
 
+export const revalidate = 0
+
 export async function generateStaticParams() {
   const items = await getLivestock()
   return items.map(i => ({ slug: i.slug }))

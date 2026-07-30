@@ -2,6 +2,8 @@ import { getProjects } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
 import ProjectCard from "@/components/ProjectCard"
 
+export const revalidate = 0
+
 export default async function ProjectsPage() {
   const projects = await getProjects()
 

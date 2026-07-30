@@ -1,3 +1,5 @@
+export const revalidate = 0
+
 import { getProjects, getProducts, getLivestock, getShopInfo } from "@/lib/data"
 import Hero from "@/components/Hero"
 import AnimatedSection from "@/components/AnimatedSection"
