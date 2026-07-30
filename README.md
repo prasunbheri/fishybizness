@@ -1,37 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# fishybizness 🐠
+
+Aquarium shop website with project portfolio, product catalog, livestock showcase, and admin panel.
+
+## Live Site
+
+https://fishybiz.duckdns.org
+
+## Admin Panel
+
+https://fishybiz.duckdns.org/admin/login
+
+| Credential | Value |
+|---|---|
+| Username | `admin` |
+| Password | `fishybizness2024` |
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Updating Content
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Edit JSON files in `/content/`:
 
-## Learn More
+- **`content/livestock.json`** — Fish, plants, invertebrates
+- **`content/products.json`** — Shop products (set `amazonUrl` when ready)
+- **`content/projects.json`** — Portfolio projects
+- **`content/shop.json`** — Shop info, hours, social links
 
-To learn more about Next.js, take a look at the following resources:
+Or use the admin panel at `/admin`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+git push
+ssh to server, then:
+cd ~/fishybizness && git pull && npm run build && pm2 restart fishybizness
+```
 
-## Deploy on Vercel
+## Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# fishybizness
+Next.js 16, Tailwind CSS, Framer Motion
