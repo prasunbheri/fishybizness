@@ -1,28 +1,30 @@
-import { getProjects, getProducts, getShopInfo } from "@/lib/data"
+import { getProjects, getProducts, getLivestock, getShopInfo } from "@/lib/data"
 import Hero from "@/components/Hero"
 import AnimatedSection from "@/components/AnimatedSection"
-import ProjectCard from "@/components/ProjectCard"
+import ScrollingProjects from "@/components/ScrollingProjects"
 import ProductCard from "@/components/ProductCard"
+import LivestockCard from "@/components/LivestockCard"
 import Link from "next/link"
 
 export default async function Home() {
-  const [shop, projects, products] = await Promise.all([
+  const [shop, projects, products, livestock] = await Promise.all([
     getShopInfo(),
     getProjects(),
     getProducts(),
+    getLivestock(),
   ])
 
-  const featuredProjects = projects.slice(0, 3)
   const featuredProducts = products.slice(0, 4)
+  const featuredLivestock = livestock.slice(0, 4)
 
   return (
     <>
       <Hero shop={shop} />
 
-      {/* Featured Projects */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      {/* Featured Projects - Slow Scrolling */}
+      <section className="py-20 overflow-hidden">
         <AnimatedSection>
-          <div className="flex items-end justify-between mb-10">
+          <div className="flex items-end justify-between mb-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
             <div>
               <span className="text-xs uppercase tracking-widest text-cyan-600 dark:text-cyan-400 font-medium">Portfolio</span>
               <h2 className="text-3xl font-bold mt-1 text-zinc-800 dark:text-white">Recent Projects</h2>
@@ -34,20 +36,16 @@ export default async function Home() {
               View all &rarr;
             </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredProjects.map((project, i) => (
-              <ProjectCard key={project.id} project={project} index={i} />
-            ))}
-          </div>
-          <div className="mt-6 text-center sm:hidden">
-            <Link
-              href="/projects"
-              className="text-sm font-medium text-cyan-600 dark:text-cyan-400 hover:underline underline-offset-4"
-            >
-              View all projects &rarr;
-            </Link>
-          </div>
         </AnimatedSection>
+        <ScrollingProjects projects={projects} />
+        <div className="mt-6 text-center sm:hidden">
+          <Link
+            href="/projects"
+            className="text-sm font-medium text-cyan-600 dark:text-cyan-400 hover:underline underline-offset-4"
+          >
+            View all projects &rarr;
+          </Link>
+        </div>
       </section>
 
       {/* Featured Products */}
@@ -83,6 +81,39 @@ export default async function Home() {
             </div>
           </AnimatedSection>
         </div>
+      </section>
+
+      {/* Featured Livestock */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <AnimatedSection>
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <span className="text-xs uppercase tracking-widest text-cyan-600 dark:text-cyan-400 font-medium">Livestock</span>
+              <h2 className="text-3xl font-bold mt-1 text-zinc-800 dark:text-white">Available Fish & Plants</h2>
+            </div>
+            <Link
+              href="/livestock"
+              className="hidden sm:inline-flex text-sm font-medium text-cyan-600 dark:text-cyan-400 hover:underline underline-offset-4"
+            >
+              View all &rarr;
+            </Link>
+          </div>
+        </AnimatedSection>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          {featuredLivestock.map((item, i) => (
+            <LivestockCard key={item.id} item={item} index={i} />
+          ))}
+        </div>
+        <AnimatedSection delay={0.2}>
+          <div className="mt-6 text-center sm:hidden">
+            <Link
+              href="/livestock"
+              className="text-sm font-medium text-cyan-600 dark:text-cyan-400 hover:underline underline-offset-4"
+            >
+              Browse all livestock &rarr;
+            </Link>
+          </div>
+        </AnimatedSection>
       </section>
 
       {/* Social / Contact CTA */}
