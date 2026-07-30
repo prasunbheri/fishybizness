@@ -1,0 +1,23 @@
+{
+  "shopName": "FishyBizness Aquatics",
+  "tagline": "Your underwater world starts here",
+  "description": "FishyBizness Aquatics is a full-service aquarium shop specializing in custom tank design, maintenance, and premium aquatic products. From nano reefs to massive koi ponds, we bring your aquatic vision to life.",
+  "email": "hello@fishybizness.com",
+  "phone": "+1 (555) 123-4567",
+  "address": "123 Coral Reef Drive, Aquaville, CA 90210",
+  "hours": {
+    "monday": "10:00 AM - 7:00 PM",
+    "tuesday": "10:00 AM - 7:00 PM",
+    "wednesday": "10:00 AM - 7:00 PM",
+    "thursday": "10:00 AM - 7:00 PM",
+    "friday": "10:00 AM - 8:00 PM",
+    "saturday": "9:00 AM - 6:00 PM",
+    "sunday": "11:00 AM - 5:00 PM"
+  },
+  "social": {
+    "instagram": { "url": "https://instagram.com/fishybizness", "label": "@fishybizness" },
+    "youtube": { "url": "https://youtube.com/@fishybizness", "label": "FishyBizness Aquatics" },
+    "facebook": { "url": "https://facebook.com/fishybizness", "label": "FishyBizness Aquatics" },
+    "googleMaps": { "url": "https://maps.google.com/?q=fishybizness", "label": "Find us on Google" }
+  }
+}

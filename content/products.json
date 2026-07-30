@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "name": "Fluval FX6 High-Performance Canister Filter",
+    "slug": "fluval-fx6-canister-filter",
+    "image": "/images/products/fx6.jpg",
+    "price": "249.99",
+    "category": "filtration",
+    "description": "Powerful canister filter suitable for aquariums up to 400 gallons. Features multi-stage filtration with easy prime technology, quick-connect hoses, and whisper-quiet operation. Ideal for large freshwater and saltwater setups.",
+    "amazonUrl": null
+  },
+  {
+    "id": 2,
+    "name": "Eheim Jäger Aquarium Heater 300W",
+    "slug": "eheim-jager-heater-300w",
+    "image": "/images/products/heater.jpg",
+    "price": "54.99",
+    "category": "equipment",
+    "description": "Precision German-engineered submersible heater with shatterproof borosilicate glass. Accurate temperature control within 0.5°C with automatic shutoff. Suitable for aquariums from 100 to 300 liters.",
+    "amazonUrl": null
+  },
+  {
+    "id": 3,
+    "name": "ADA Amazonia Aquasoil Powder 9L",
+    "slug": "ada-amazonia-aquasoil-powder",
+    "image": "/images/products/aquasoil.jpg",
+    "price": "44.99",
+    "category": "substrate",
+    "description": "Premium nutrient-rich aquasoil from ADA, formulated for planted aquariums. The powder version is ideal for foreground carpeting plants. Lowers pH and buffers water parameters to create optimal growing conditions.",
+    "amazonUrl": null
+  },
+  {
+    "id": 4,
+    "name": "AquaClear 110 Power Filter",
+    "slug": "aquaclear-110-power-filter",
+    "image": "/images/products/aquaclear.jpg",
+    "price": "69.99",
+    "category": "filtration",
+    "description": "Versatile hang-on-back power filter with fully customizable media basket. Features 500 GPH flow rate, adjustable flow control, and self-priming pump. Perfect for large freshwater aquariums up to 110 gallons.",
+    "amazonUrl": null
+  },
+  {
+    "id": 5,
+    "name": "Chihiros WRGB II Pro LED Light 90cm",
+    "slug": "chihiros-wrgb2-pro-led",
+    "image": "/images/products/light.jpg",
+    "price": "189.99",
+    "category": "lighting",
+    "description": "High-output LED lighting system with WiFi control and programmable sunrise/sunset simulation. Full spectrum RGBW LEDs deliver 120+ PAR at 60cm depth. Ideal for high-light planted tanks and demanding carpet plants.",
+    "amazonUrl": null
+  },
+  {
+    "id": 6,
+    "name": "Tropica Growth Juice CO2 Booster 500ml",
+    "slug": "tropica-growth-juice-co2",
+    "image": "/images/products/co2.jpg",
+    "price": "19.99",
+    "category": "co2",
+    "description": "Liquid carbon supplement for planted aquariums. Provides an accessible source of carbon for aquatic plants. Safe for fish and invertebrates when used as directed. Alternative to pressurized CO2 systems.",
+    "amazonUrl": null
+  },
+  {
+    "id": 7,
+    "name": "Seachem Pristine 500ml",
+    "slug": "seachem-pristine",
+    "image": "/images/products/pristine.jpg",
+    "price": "14.99",
+    "category": "water-care",
+    "description": "Natural biological water treatment that reduces sludge, detritus, and organic waste. Contains beneficial bacteria that break down waste at the source. Improves water clarity and reduces maintenance frequency.",
+    "amazonUrl": null
+  },
+  {
+    "id": 8,
+    "name": "Oase Biomaster Thermo 600 Canister Filter",
+    "slug": "oase-biomaster-thermo-600",
+    "image": "/images/products/oase.jpg",
+    "price": "219.99",
+    "category": "filtration",
+    "description": "Premium canister filter with integrated heater for a clean in-tank look. Self-priming with pre-filter for easy cleaning. Suitable for aquariums up to 250 liters with adjustable flow control.",
+    "amazonUrl": null
+  },
+  {
+    "id": 9,
+    "name": "UNS Delta 60 Aquarium 60x30x36cm",
+    "slug": "uns-delta-60-aquarium",
+    "image": "/images/products/tank.jpg",
+    "price": "159.99",
+    "category": "tanks",
+    "description": "Ultra-clear low-iron glass aquarium with beveled edges and starphire glass. Rimless design for a clean, modern look. Approximately 64 liters with 6mm thick glass. Includes leveling mat.",
+    "amazonUrl": null
+  },
+  {
+    "id": 10,
+    "name": "Hanna Instruments pH Tester HI98103",
+    "slug": "hanna-ph-tester",
+    "image": "/images/products/ph-tester.jpg",
+    "price": "39.99",
+    "category": "testing",
+    "description": "Portable pH tester with replaceable electrode and automatic calibration. Easy-to-read LCD display with 0.01 pH resolution. Ideal for freshwater and saltwater aquarium testing.",
+    "amazonUrl": null
+  }
+]

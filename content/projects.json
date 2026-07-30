@@ -1,0 +1,76 @@
+[
+  {
+    "id": 1,
+    "title": "200L Planted Amazon Biotope",
+    "slug": "200l-planted-amazon-biotope",
+    "date": "2025-12-15",
+    "images": [
+      "/images/projects/amazon-1.jpg",
+      "/images/projects/amazon-2.jpg",
+      "/images/projects/amazon-3.jpg"
+    ],
+    "description": "A lush 200-liter Amazon biotope aquarium designed for a client who wanted a slice of the Rio Negro in their living room. We used blackwater parameters with Indian almond leaves, driftwood from the Amazon basin, and a careful selection of cardinal tetras, corydoras, and angelfish. The plant palette included Amazon swords, java ferns, and floating frogbit to create dappled lighting conditions. A custom-built cabinet with a matte black finish houses the canister filtration and CO2 injection system.",
+    "tags": ["planted", "freshwater", "biotope", "amazon"]
+  },
+  {
+    "id": 2,
+    "title": "Reefscape 120G Mixed Reef",
+    "slug": "reefscape-120g-mixed-reef",
+    "date": "2025-10-20",
+    "images": [
+      "/images/projects/reef-1.jpg",
+      "/images/projects/reef-2.jpg"
+    ],
+    "description": "A 120-gallon mixed reef tank featuring a curated selection of SPS and LPS corals alongside a thriving cleanup crew. The aquascape was built using dry rock and Marco Mortar to create a pillar structure with multiple caves and overhangs. Equipped with Radion XR30 lighting, a Reef Octopus skimmer, and a programmable Apex controller for automated water changes and dosing. The client wanted a low-maintenance system that still delivered a high-impact visual display.",
+    "tags": ["saltwater", "reef", "corals", "sps", "lps"]
+  },
+  {
+    "id": 3,
+    "title": "60G Nano Reef Office Tank",
+    "slug": "60g-nano-reef-office",
+    "date": "2025-08-05",
+    "images": [
+      "/images/projects/nano-reef-1.jpg",
+      "/images/projects/nano-reef-2.jpg"
+    ],
+    "description": "A compact 60-gallon nano reef built for a tech startup's office lobby. The focus was on visual impact with minimal footprint. We used a single island aquascape with branching montipora, zoanthids, and a elegance coral as the centerpiece. A pair of ocellaris clownfish and a firefish goby provide movement. The tank is plumbed into the building's central HVAC for temperature stability, with an AIO filtration system hidden in the custom walnut cabinet.",
+    "tags": ["saltwater", "reef", "nano", "office"]
+  },
+  {
+    "id": 4,
+    "title": "Japanese Iwagumi Nature Aquarium",
+    "slug": "japanese-iwagumi-nature-aquarium",
+    "date": "2025-06-12",
+    "images": [
+      "/images/projects/iwagumi-1.jpg",
+      "/images/projects/iwagumi-2.jpg",
+      "/images/projects/iwagumi-3.jpg"
+    ],
+    "description": "A minimalist Iwagumi layout inspired by the Amano style, featuring three main stones (Oyaishi, Soeishi, Fukuseki) arranged in perfect asymmetry. A dense carpet of Monte Carlo was grown emersed before flooding, with a background of Rotala wallichii adding depth. The tank runs on a pressurized CO2 system with a drop checker maintaining 30ppm. A shoal of 50 celestial pearl danios provides scale against the hardscape.",
+    "tags": ["planted", "freshwater", "iwagumi", "nature-aquarium"]
+  },
+  {
+    "id": 5,
+    "title": "Pond Conversion: Koi & Native Plants",
+    "slug": "pond-conversion-koi-native-plants",
+    "date": "2025-04-01",
+    "images": [
+      "/images/projects/pond-1.jpg",
+      "/images/projects/pond-2.jpg"
+    ],
+    "description": "A complete backyard pond renovation converting a neglected 3000-gallon koi pond into a balanced ecosystem. We redesigned the filtration system with a settlement chamber, moving bed biofilter, and a UV sterilizer. Native marginal plants were added around the perimeter for natural filtration and aesthetic appeal. A new liner, bottom drain system, and rock waterfall feature completed the transformation. The client's prize koi now thrive in crystal-clear water year-round.",
+    "tags": ["pond", "koi", "outdoor", "native-plants"]
+  },
+  {
+    "id": 6,
+    "title": "Custom 400L Southeast Asian Blackwater",
+    "slug": "custom-400l-southeast-asian-blackwater",
+    "date": "2025-02-18",
+    "images": [
+      "/images/projects/blackwater-1.jpg",
+      "/images/projects/blackwater-2.jpg"
+    ],
+    "description": "A custom 400-liter blackwater biotope replicating the peat swamps of Southeast Asia. Dark tannin-stained water, leaf litter, and twisted bogwood create an authentic habitat for a breeding group of Betta macrostoma and Trigonostigma heteromorpha. The filtration is peat-filtered to maintain pH below 5.0, with dim LED lighting to simulate the dense canopy cover of the natural habitat. A fogger adds atmospheric mist above the water surface.",
+    "tags": ["freshwater", "blackwater", "biotope", "southeast-asia"]
+  }
+]
