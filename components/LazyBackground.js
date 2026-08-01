@@ -4,10 +4,10 @@ import { useRef, useState, useEffect } from 'react'
 import { loadImage } from '@/lib/image-loader'
 
 const WATERMARK_SVG = `data:image/svg+xml,${encodeURIComponent(
-  `<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220">
+  `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400">
     <defs>
-      <pattern id="wm" width="110" height="110" patternUnits="userSpaceOnUse" patternTransform="rotate(-25)">
-        <text x="0" y="55" font-size="13" font-family="Arial, sans-serif" fill="rgba(255,255,255,0.55)" transform="translate(0 0)">Fishy Bizness</text>
+      <pattern id="wm" width="400" height="400" patternUnits="userSpaceOnUse" patternTransform="rotate(-25)">
+        <text x="24" y="84" font-size="13" font-family="Arial, sans-serif" fill="rgba(255,255,255,0.55)">Fishy Bizness</text>
       </pattern>
     </defs>
     <rect width="100%" height="100%" fill="url(#wm)"/>
