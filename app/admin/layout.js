@@ -11,6 +11,7 @@ const navItems = [
   { href: '/admin/products', label: 'Products', icon: '📦' },
   { href: '/admin/categories', label: 'Categories', icon: '🏷️' },
   { href: '/admin/projects', label: 'Projects', icon: '🏗️' },
+  { href: '/admin/backup', label: 'Backup', icon: '💾' },
   { href: '/admin/settings', label: 'Settings', icon: '⚙️' },
 ]
 
@@ -21,6 +22,7 @@ const mobileIcons = [
   { href: '/admin/products', icon: '📦' },
   { href: '/admin/categories', icon: '🏷️' },
   { href: '/admin/projects', icon: '🏗️' },
+  { href: '/admin/backup', icon: '💾' },
   { href: '/admin/settings', icon: '⚙️' },
 ]
 
