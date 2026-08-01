@@ -14,11 +14,27 @@ const MIME = {
 
 const root = path.join(process.cwd(), 'public', 'images')
 
+function isSameOrigin(request) {
+  const secFetchSite = request.headers.get('sec-fetch-site')
+  if (secFetchSite === 'same-origin' || secFetchSite === 'same-site') return true
+  const referer = request.headers.get('referer') || ''
+  if (!referer) return false
+  try {
+    const host = request.headers.get('host')
+    return new URL(referer).host === host
+  } catch {
+    return false
+  }
+}
+
 export async function GET(request, { params }) {
   const { path: segments } = await params
   const filePath = path.join(root, ...segments)
   if (!filePath.startsWith(root)) {
     return new Response('Not found', { status: 404 })
+  }
+  if (!isSameOrigin(request)) {
+    return new Response('Forbidden', { status: 403 })
   }
   try {
     const data = await readFile(filePath)

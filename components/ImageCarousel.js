@@ -43,6 +43,7 @@ export default function ImageCarousel({ images, className = '' }) {
             <LazyBackground
               src={isActive || isNext ? img : null}
               eager={isActive}
+              watermark
               className="w-full h-full bg-cover bg-center"
             />
           </div>
