@@ -39,7 +39,7 @@ export default function NewLivestock() {
         {
           key: 'description',
           label: 'Description',
-          type: 'textarea',
+          type: 'richtext',
           required: true,
         },
         { key: 'images', label: 'Images', type: 'images' },

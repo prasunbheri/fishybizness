@@ -48,7 +48,7 @@ export default function NewProduct() {
         { key: 'price', label: 'Price', type: 'number', step: '0.01', required: true, help: 'Enter price in INR without ₹ symbol' },
         { key: 'showPrice', label: 'Show price on site', type: 'checkbox' },
         { key: 'quantity', label: 'Quantity in Stock', type: 'number', step: '1', required: true },
-        { key: 'description', label: 'Description', type: 'textarea', required: true },
+        { key: 'description', label: 'Description', type: 'richtext', required: true },
         { key: 'images', label: 'Images', type: 'images' },
         { key: 'amazonUrl', label: 'Amazon URL', placeholder: 'https://amazon.com/...', help: 'Leave empty if not yet available' },
       ]}

@@ -42,7 +42,7 @@ export default function EditLivestock({ params }) {
         {
           key: 'description',
           label: 'Description',
-          type: 'textarea',
+          type: 'richtext',
           required: true,
         },
         { key: 'images', label: 'Images', type: 'images' },

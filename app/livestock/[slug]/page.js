@@ -1,7 +1,9 @@
 import { getLivestock, getLivestockItem } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
 import ImageCarousel from "@/components/ImageCarousel"
+import RichContent from "@/components/RichContent"
 import ViewTracker from "@/components/ViewTracker"
+import { stripTags } from "@/lib/sanitize"
 import Link from "next/link"
 
 export const revalidate = 0
@@ -17,7 +19,7 @@ export async function generateMetadata({ params }) {
   if (!item) return { title: "Not Found" }
   return {
     title: `${item.name} | FishyBizness Aquatics`,
-    description: item.description.slice(0, 160),
+    description: stripTags(item.description).slice(0, 160),
   }
 }
 
@@ -110,9 +112,7 @@ export default async function LivestockDetailPage({ params }) {
           </AnimatedSection>
 
           <AnimatedSection delay={0.3}>
-            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-sm">
-              {item.description}
-            </p>
+            <RichContent html={item.description} />
           </AnimatedSection>
         </div>
       </div>

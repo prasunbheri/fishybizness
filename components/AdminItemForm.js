@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import RichTextEditor from './RichTextEditor'
 
 export default function AdminItemForm({ type, slug, title, fields, backHref }) {
   const [form, setForm] = useState({})
@@ -52,6 +53,15 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
     e.preventDefault()
     setSaving(true)
     setError('')
+
+    const requiredEmpty = fields.find(
+      f => f.required && (!form[f.key] || (typeof form[f.key] === 'string' && !form[f.key].trim()))
+    )
+    if (requiredEmpty) {
+      setError(`${requiredEmpty.label} is required`)
+      setSaving(false)
+      return
+    }
 
     try {
       const url = slug
@@ -140,6 +150,13 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
                 rows={4}
                 className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 text-zinc-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 required={f.required}
+              />
+            ) : f.type === 'richtext' ? (
+              <RichTextEditor
+                value={form[f.key] || ''}
+                onChange={v => set(f.key, v)}
+                placeholder={f.placeholder || f.label}
+                minHeight={f.rows ? `${f.rows * 28}px` : '140px'}
               />
             ) : f.type === 'select' ? (
               <select

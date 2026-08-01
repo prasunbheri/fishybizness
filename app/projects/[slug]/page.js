@@ -1,7 +1,9 @@
 import { getProjects, getProject } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
 import ProjectDetailClient from "./ProjectDetailClient"
+import RichContent from "@/components/RichContent"
 import ViewTracker from "@/components/ViewTracker"
+import { stripTags } from "@/lib/sanitize"
 
 export const revalidate = 0
 
@@ -16,7 +18,7 @@ export async function generateMetadata({ params }) {
   if (!project) return { title: "Project Not Found" }
   return {
     title: `${project.title} | FishyBizness Aquatics`,
-    description: project.description.slice(0, 160),
+    description: stripTags(project.description).slice(0, 160),
   }
 }
 
@@ -60,9 +62,7 @@ export default async function ProjectDetailPage({ params }) {
             ))}
           </div>
 
-          <div className="prose prose-sm dark:prose-invert max-w-none text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-line">
-            {project.description}
-          </div>
+          <RichContent html={project.description} className="max-w-none mt-2" />
         </div>
       </AnimatedSection>
     </div>

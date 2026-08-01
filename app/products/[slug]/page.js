@@ -1,8 +1,10 @@
 import { getProducts, getProduct } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
 import ImageCarousel from "@/components/ImageCarousel"
+import RichContent from "@/components/RichContent"
 import ViewTracker from "@/components/ViewTracker"
 import { buildWhatsAppLink } from "@/lib/whatsapp"
+import { stripTags } from "@/lib/sanitize"
 import { headers } from "next/headers"
 import Link from "next/link"
 
@@ -19,7 +21,7 @@ export async function generateMetadata({ params }) {
   if (!product) return { title: "Product Not Found" }
   return {
     title: `${product.name} | FishyBizness Aquatics`,
-    description: product.description.slice(0, 160),
+    description: stripTags(product.description).slice(0, 160),
   }
 }
 
@@ -82,9 +84,7 @@ export default async function ProductDetailPage({ params }) {
           </AnimatedSection>
 
           <AnimatedSection delay={0.2}>
-            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-sm mb-8">
-              {product.description}
-            </p>
+            <RichContent html={product.description} className="mb-8" />
           </AnimatedSection>
 
           <AnimatedSection delay={0.3}>
