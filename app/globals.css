@@ -40,19 +40,23 @@ body {
   pointer-events: none;
 }
 
-.rich-content > *:first-child {
+.rich-content > *:first-child,
+.rich-editor > *:first-child {
   margin-top: 0;
 }
 
-.rich-content > *:last-child {
+.rich-content > *:last-child,
+.rich-editor > *:last-child {
   margin-bottom: 0;
 }
 
-.rich-content p {
+.rich-content p,
+.rich-editor p {
   margin: 0.5rem 0;
 }
 
-.rich-content h2 {
+.rich-content h2,
+.rich-editor h2 {
   margin: 1.25rem 0 0.5rem;
   font-size: 1.25rem;
   font-weight: 700;
@@ -60,7 +64,8 @@ body {
   color: var(--foreground);
 }
 
-.rich-content h3 {
+.rich-content h3,
+.rich-editor h3 {
   margin: 1.1rem 0 0.4rem;
   font-size: 1.05rem;
   font-weight: 600;
@@ -69,45 +74,55 @@ body {
 }
 
 .rich-content ul,
-.rich-content ol {
+.rich-content ol,
+.rich-editor ul,
+.rich-editor ol {
   margin: 0.5rem 0;
   padding-left: 1.4rem;
 }
 
-.rich-content ul {
+.rich-content ul,
+.rich-editor ul {
   list-style: disc;
 }
 
-.rich-content ol {
+.rich-content ol,
+.rich-editor ol {
   list-style: decimal;
 }
 
-.rich-content li {
+.rich-content li,
+.rich-editor li {
   margin: 0.25rem 0;
 }
 
-.rich-content a {
+.rich-content a,
+.rich-editor a {
   color: #0891b2;
   text-decoration: underline;
 }
 
-.rich-content strong {
+.rich-content strong,
+.rich-editor strong {
   font-weight: 600;
   color: var(--foreground);
 }
 
-.rich-content em {
+.rich-content em,
+.rich-editor em {
   font-style: italic;
 }
 
-.rich-content blockquote {
+.rich-content blockquote,
+.rich-editor blockquote {
   border-left: 3px solid #22d3ee;
   padding-left: 1rem;
   margin: 0.75rem 0;
   font-style: italic;
 }
 
-.rich-content code {
+.rich-content code,
+.rich-editor code {
   background: rgba(0, 0, 0, 0.06);
   padding: 0.1rem 0.35rem;
   border-radius: 0.25rem;
@@ -115,7 +130,8 @@ body {
 }
 
 @media (prefers-color-scheme: dark) {
-  .rich-content code {
+  .rich-content code,
+  .rich-editor code {
     background: rgba(255, 255, 255, 0.1);
   }
 }
