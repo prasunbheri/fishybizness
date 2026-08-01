@@ -25,6 +25,13 @@ export default async function ProductsPage({ searchParams }) {
     ? subcategories.filter(s => s.category === activeCategory)
     : []
 
+  const productCountBySub = {}
+  for (const p of allProducts) {
+    if (p.category === activeCategory && p.subcategory) {
+      productCountBySub[p.subcategory] = (productCountBySub[p.subcategory] || 0) + 1
+    }
+  }
+
   return (
     <div className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <AnimatedSection>
@@ -87,6 +94,9 @@ export default async function ProductsPage({ searchParams }) {
                 }`}
               >
                 {sub.label || sub.name}
+                <span className="ml-1.5 text-[9px] px-1.5 py-0.5 rounded-full bg-white/50 dark:bg-zinc-600/60 text-zinc-600 dark:text-zinc-300">
+                  {productCountBySub[sub.name] || 0}
+                </span>
               </Link>
             ))}
           </div>
