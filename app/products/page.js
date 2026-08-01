@@ -1,15 +1,22 @@
 import { getProducts, getCategories, getSubcategories } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
 import ProductCard from "@/components/ProductCard"
+import Pagination from "@/components/Pagination"
 
 import Link from 'next/link'
 
 export const revalidate = 0
 
+const PER_PAGE_OPTIONS = [10, 20, 30, 40, 50]
+
 export default async function ProductsPage({ searchParams }) {
   const params = await searchParams
   const activeCategory = params?.category || null
   const activeSubcategory = params?.subcategory || null
+  const perPageRaw = Number(params?.perPage)
+  const perPage = PER_PAGE_OPTIONS.includes(perPageRaw) ? perPageRaw : 30
+  const pageRaw = Number(params?.page)
+  const page = Number.isInteger(pageRaw) && pageRaw > 0 ? pageRaw : 1
 
   const [allProducts, categories, subcategories] = await Promise.all([
     getProducts(),
@@ -31,6 +38,11 @@ export default async function ProductsPage({ searchParams }) {
       productCountBySub[p.subcategory] = (productCountBySub[p.subcategory] || 0) + 1
     }
   }
+
+  const total = products.length
+  const totalPages = Math.max(1, Math.ceil(total / perPage))
+  const currentPage = Math.min(page, totalPages)
+  const paged = products.slice((currentPage - 1) * perPage, currentPage * perPage)
 
   return (
     <div className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -104,10 +116,12 @@ export default async function ProductsPage({ searchParams }) {
       </AnimatedSection>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-        {products.map((product, i) => (
+        {paged.map((product, i) => (
           <ProductCard key={product.id} product={product} index={i} />
         ))}
       </div>
+
+      <Pagination path="/products" total={total} page={currentPage} perPage={perPage} />
     </div>
   )
 }

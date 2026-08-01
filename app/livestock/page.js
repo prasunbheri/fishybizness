@@ -1,17 +1,23 @@
 import { getLivestock, getLivestockTypes } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
 import LivestockCard from "@/components/LivestockCard"
+import Pagination from "@/components/Pagination"
 import SortSelect from "@/components/SortSelect"
 import Link from "next/link"
 
 export const revalidate = 0
 
 const typeOrder = { fish: 0, invertebrate: 1, plant: 2 }
+const PER_PAGE_OPTIONS = [10, 20, 30, 40, 50]
 
 export default async function LivestockPage({ searchParams }) {
   const params = await searchParams
   const activeType = params?.type || null
   const sort = params?.sort || 'name'
+  const perPageRaw = Number(params?.perPage)
+  const perPage = PER_PAGE_OPTIONS.includes(perPageRaw) ? perPageRaw : 30
+  const pageRaw = Number(params?.page)
+  const page = Number.isInteger(pageRaw) && pageRaw > 0 ? pageRaw : 1
 
   const [allLivestock, types] = await Promise.all([
     getLivestock(),
@@ -30,6 +36,11 @@ export default async function LivestockPage({ searchParams }) {
     }
     return a.name.localeCompare(b.name)
   })
+
+  const total = livestock.length
+  const totalPages = Math.max(1, Math.ceil(total / perPage))
+  const currentPage = Math.min(page, totalPages)
+  const paged = livestock.slice((currentPage - 1) * perPage, currentPage * perPage)
 
   return (
     <div className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -80,10 +91,12 @@ export default async function LivestockPage({ searchParams }) {
             No {activeType || 'livestock'} available right now. Check back soon!
           </p>
         )}
-        {livestock.map((item, i) => (
+        {paged.map((item, i) => (
           <LivestockCard key={item.id} item={item} index={i} />
         ))}
       </div>
+
+      <Pagination path="/livestock" total={total} page={currentPage} perPage={perPage} />
     </div>
   )
 }
