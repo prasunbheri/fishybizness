@@ -14,6 +14,7 @@ export default function AdminLivestock() {
         { key: 'difficulty', label: 'Difficulty' },
         { key: 'price', label: 'Price', render: v => <span className="font-mono">{v && v !== '0' ? `₹${v}` : '-'}</span> },
         { key: 'quantity', label: 'Qty', render: v => <span className="font-mono">{v}</span> },
+        { key: 'views', label: 'Views', render: v => <span className="font-mono">{v || 0}</span> },
       ]}
     />
   )

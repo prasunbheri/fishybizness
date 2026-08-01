@@ -1,6 +1,7 @@
 import { getLivestock, getLivestockItem } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
 import ImageCarousel from "@/components/ImageCarousel"
+import ViewTracker from "@/components/ViewTracker"
 import Link from "next/link"
 
 export const revalidate = 0
@@ -47,6 +48,7 @@ export default async function LivestockDetailPage({ params }) {
 
   return (
     <div className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+      <ViewTracker type="livestock" slug={item.slug} />
       <AnimatedSection>
         <Link
           href="/livestock"

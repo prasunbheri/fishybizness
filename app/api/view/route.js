@@ -3,7 +3,7 @@ import { getDB } from '@/lib/db'
 export async function POST(request) {
   try {
     const { type, slug } = await request.json()
-    const table = type === 'product' ? 'products' : type === 'project' ? 'projects' : null
+    const table = type === 'product' ? 'products' : type === 'project' ? 'projects' : type === 'livestock' ? 'livestock' : null
     if (!table || !slug) {
       return Response.json({ error: 'Invalid request' }, { status: 400 })
     }

@@ -51,12 +51,13 @@ export default async function AdminDashboard() {
 
   function renderStats(s) {
     if (s.statKey === 'livestock') {
-      const { count, byType } = stats.livestock
+      const { count, views, byType } = stats.livestock
       const parts = byType.map(t => `${t.count} ${t.type}`)
       return (
         <div className="mt-3 space-y-1 text-sm">
           <p className="font-semibold text-2xl text-zinc-800 dark:text-white">{count}</p>
           <p className="text-xs text-zinc-500 capitalize">{parts.length ? parts.join(' · ') : 'No entries yet'}</p>
+          <p className="text-xs text-zinc-500">{formatViews(views)} total views</p>
         </div>
       )
     }
@@ -144,7 +145,14 @@ export default async function AdminDashboard() {
         ))}
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6 mt-8">
+      <div className="grid md:grid-cols-3 gap-6 mt-8">
+        <TopList
+          label="Most Viewed Livestock"
+          icon="🐟"
+          items={stats.livestock.top}
+          nameKey="name"
+          editHref="/admin/livestock"
+        />
         <TopList
           label="Most Viewed Products"
           icon="📦"
