@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import LazyBackground from './LazyBackground'
 
 export default function ImageCarousel({ images, className = '' }) {
   const [current, setCurrent] = useState(0)
@@ -30,13 +31,23 @@ export default function ImageCarousel({ images, className = '' }) {
 
   return (
     <div className={`relative aspect-square rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 group ${className}`}>
-      {images.map((img, i) => (
-        <div
-          key={i}
-          className="absolute inset-0 bg-cover bg-center transition-opacity duration-700 ease-in-out"
-          style={{ backgroundImage: `url(${img})`, opacity: i === current ? 1 : 0 }}
-        />
-      ))}
+      {images.map((img, i) => {
+        const isActive = i === current
+        const isNext = i === (current + 1) % images.length
+        return (
+          <div
+            key={i}
+            className="absolute inset-0 transition-opacity duration-700 ease-in-out"
+            style={{ opacity: isActive ? 1 : 0 }}
+          >
+            <LazyBackground
+              src={isActive || isNext ? img : null}
+              eager={isActive}
+              className="w-full h-full bg-cover bg-center"
+            />
+          </div>
+        )
+      })}
 
       {images.length > 1 && (
         <>

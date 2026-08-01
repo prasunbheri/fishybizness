@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import LazyBackground from './LazyBackground'
 
 const typeColors = {
   fish: 'bg-blue-500/90',
@@ -24,9 +25,9 @@ export default function LivestockCard({ item, index }) {
       <Link href={`/livestock/${item.slug}`} className="group block">
         <div className="relative aspect-square overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800">
           {img ? (
-            <div
+            <LazyBackground
+              src={img}
               className="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
-              style={{ backgroundImage: `url(${img})` }}
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-800 flex items-center justify-center text-zinc-400 dark:text-zinc-600 text-4xl">

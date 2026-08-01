@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import LazyBackground from './LazyBackground'
 
 function HeroVideo({ src }) {
   return (
@@ -31,13 +32,23 @@ function HeroSlideshow({ images }) {
 
   return (
     <>
-      {images.map((img, i) => (
-        <div
-          key={i}
-          className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
-          style={{ backgroundImage: `url(${img})`, opacity: i === current ? 1 : 0 }}
-        />
-      ))}
+      {images.map((img, i) => {
+        const isActive = i === current
+        const isNext = i === (current + 1) % images.length
+        return (
+          <div
+            key={i}
+            className="absolute inset-0 transition-opacity duration-1000"
+            style={{ opacity: isActive ? 1 : 0 }}
+          >
+            <LazyBackground
+              src={isActive || isNext ? img : null}
+              eager={isActive}
+              className="w-full h-full bg-cover bg-center"
+            />
+          </div>
+        )
+      })}
     </>
   )
 }

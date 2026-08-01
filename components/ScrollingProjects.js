@@ -3,9 +3,9 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRef, useState } from 'react'
+import LazyBackground from './LazyBackground'
 
 function ProjectThumb({ src, title }) {
-  const [loaded, setLoaded] = useState(false)
   const [error, setError] = useState(false)
 
   if (!src || error) {
@@ -24,11 +24,9 @@ function ProjectThumb({ src, title }) {
   }
 
   return (
-    <div
-      className={`w-full h-full bg-cover bg-center transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-      style={{ backgroundImage: `url(${src})` }}
-      onLoad={() => setLoaded(true)}
-      onError={() => setError(true)}
+    <LazyBackground
+      src={src}
+      className="w-full h-full bg-cover bg-center transition-opacity duration-500"
     />
   )
 }
