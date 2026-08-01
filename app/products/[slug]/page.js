@@ -1,5 +1,6 @@
 import { getProducts, getProduct } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
+import ImageCarousel from "@/components/ImageCarousel"
 import Link from "next/link"
 
 export const revalidate = 0
@@ -45,24 +46,26 @@ export default async function ProductDetailPage({ params }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
         <AnimatedSection>
-          <div className="aspect-square rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 dark:text-zinc-600 overflow-hidden">
-            <div className="text-center">
-              <div className="text-6xl mb-4">🐟</div>
-              <p className="text-sm font-mono text-zinc-500">{product.image}</p>
-            </div>
-          </div>
+          <ImageCarousel images={product.images} />
         </AnimatedSection>
 
         <div>
           <AnimatedSection delay={0.1}>
             <span className="text-xs uppercase tracking-widest text-cyan-600 dark:text-cyan-400 font-medium">
-              {product.category}
+              {product.category}{product.subcategory ? ` / ${product.subcategory}` : ''}
             </span>
             <h1 className="text-2xl sm:text-3xl font-bold mt-1 mb-3 text-zinc-800 dark:text-white">
               {product.name}
             </h1>
-            <p className="text-3xl font-mono font-bold text-cyan-600 dark:text-cyan-400 mb-6">
-              ${product.price}
+            {product.showPrice !== 0 && product.price && product.price !== '0' ? (
+              <p className="text-3xl font-mono font-bold text-cyan-600 dark:text-cyan-400 mb-2">
+                ₹{product.price}
+              </p>
+            ) : (
+              <p className="text-sm text-zinc-400 font-medium mb-2">Price on request</p>
+            )}
+            <p className={`text-xs font-medium mb-6 ${product.quantity > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
+              {product.quantity > 0 ? '✓ In Stock' : '✕ Out of Stock'}
             </p>
           </AnimatedSection>
 

@@ -1,13 +1,74 @@
 'use client'
 
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import BubbleAnimation from './BubbleAnimation'
 import Link from 'next/link'
 
+function HeroVideo({ src }) {
+  return (
+    <video
+      autoPlay
+      muted
+      loop
+      playsInline
+      className="absolute inset-0 w-full h-full object-cover"
+    >
+      <source src={src} type="video/mp4" />
+    </video>
+  )
+}
+
+function HeroSlideshow({ images }) {
+  const [current, setCurrent] = useState(0)
+
+  useEffect(() => {
+    if (images.length < 2) return
+    const timer = setInterval(() => {
+      setCurrent(i => (i + 1) % images.length)
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [images.length])
+
+  return (
+    <>
+      {images.map((img, i) => (
+        <div
+          key={i}
+          className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+          style={{ backgroundImage: `url(${img})`, opacity: i === current ? 1 : 0 }}
+        />
+      ))}
+    </>
+  )
+}
+
 export default function Hero({ shop }) {
+  const [hero, setHero] = useState(null)
+
+  useEffect(() => {
+    fetch('/api/hero')
+      .then(r => r.json())
+      .then(setHero)
+      .catch(() => setHero(null))
+  }, [])
+
+  const hasMedia = hero && (
+    (hero.type === 'video' && hero.video) ||
+    (hero.type === 'images' && hero.images?.length > 0)
+  )
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-cyan-950 via-blue-950 to-zinc-900">
-      <BubbleAnimation />
+      {hasMedia && (
+        <div className="absolute inset-0">
+          {hero.type === 'video' ? (
+            <HeroVideo src={hero.video} />
+          ) : (
+            <HeroSlideshow images={hero.images} />
+          )}
+          <div className="absolute inset-0 bg-black/60" />
+        </div>
+      )}
 
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(6,182,212,0.15)_0%,transparent_70%)]" />
 
@@ -16,15 +77,16 @@ export default function Hero({ shop }) {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="[text-shadow:_0_2px_12px_rgb(0_0_0_/_0.6)]"
         >
-          <span className="inline-block text-6xl mb-6">🐠</span>
+          <span className="inline-block text-6xl mb-6 [text-shadow:_0_4px_20px_rgb(0_0_0_/_0.7)]">🐠</span>
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white mb-4">
             {shop.shopName}
           </h1>
-          <p className="text-lg sm:text-xl text-cyan-200/80 font-medium mb-2">
+          <p className="text-lg sm:text-xl text-cyan-200/90 font-medium mb-2">
             {shop.tagline}
           </p>
-          <p className="text-sm sm:text-base text-zinc-400 max-w-xl mx-auto mb-8">
+          <p className="text-sm sm:text-base text-zinc-300 max-w-xl mx-auto mb-8">
             {shop.description}
           </p>
         </motion.div>
@@ -59,7 +121,7 @@ export default function Hero({ shop }) {
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          className="text-zinc-500"
+          className="text-zinc-400 [text-shadow:_0_2px_8px_rgb(0_0_0_/_0.7)]"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />

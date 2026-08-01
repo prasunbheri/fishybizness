@@ -6,9 +6,22 @@ import Link from 'next/link'
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: '📊' },
+  { href: '/admin/hero', label: 'Hero', icon: '🖼️' },
   { href: '/admin/livestock', label: 'Livestock', icon: '🐟' },
   { href: '/admin/products', label: 'Products', icon: '📦' },
+  { href: '/admin/categories', label: 'Categories', icon: '🏷️' },
   { href: '/admin/projects', label: 'Projects', icon: '🏗️' },
+  { href: '/admin/settings', label: 'Settings', icon: '⚙️' },
+]
+
+const mobileIcons = [
+  { href: '/admin', icon: '📊' },
+  { href: '/admin/hero', icon: '🖼️' },
+  { href: '/admin/livestock', icon: '🐟' },
+  { href: '/admin/products', icon: '📦' },
+  { href: '/admin/categories', icon: '🏷️' },
+  { href: '/admin/projects', icon: '🏗️' },
+  { href: '/admin/settings', icon: '⚙️' },
 ]
 
 export default function AdminLayout({ children }) {
@@ -83,23 +96,23 @@ export default function AdminLayout({ children }) {
 
       <div className="flex-1 flex flex-col">
         {/* Mobile header */}
-        <header className="md:hidden bg-white dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700 px-4 py-3 flex items-center justify-between">
-          <Link href="/admin" className="flex items-center gap-2">
-            <span className="text-xl">🐠</span>
+        <header className="md:hidden bg-white dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700 px-3 py-2 flex items-center justify-between">
+          <Link href="/admin" className="flex items-center gap-1.5">
+            <span className="text-lg">🐠</span>
             <span className="font-bold text-sm text-zinc-800 dark:text-white">Admin</span>
           </Link>
-          <div className="flex gap-2">
-            {navItems.map(item => (
+          <div className="flex items-center gap-0.5">
+            {mobileIcons.map(item => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-xs px-2 py-1 rounded ${
+                className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm ${
                   pathname.startsWith(item.href)
-                    ? 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300'
+                    ? 'bg-cyan-100 dark:bg-cyan-900/30'
                     : 'text-zinc-500'
                 }`}
               >
-                {item.label}
+                {item.icon}
               </Link>
             ))}
             <button
@@ -107,14 +120,15 @@ export default function AdminLayout({ children }) {
                 await fetch('/api/auth/logout', { method: 'POST' })
                 router.push('/admin/login')
               }}
-              className="text-xs text-red-500 px-2"
+              className="w-8 h-8 flex items-center justify-center text-sm"
+              aria-label="Sign out"
             >
-              Exit
+              🚪
             </button>
           </div>
         </header>
 
-        <main className="flex-1 p-6 overflow-auto">
+        <main className="flex-1 p-6 pt-20 overflow-auto">
           {children}
         </main>
       </div>

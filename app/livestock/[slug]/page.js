@@ -1,5 +1,6 @@
 import { getLivestock, getLivestockItem } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
+import ImageCarousel from "@/components/ImageCarousel"
 import Link from "next/link"
 
 export const revalidate = 0
@@ -57,12 +58,7 @@ export default async function LivestockDetailPage({ params }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
         <AnimatedSection>
-          <div className="aspect-square rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 dark:text-zinc-600 overflow-hidden">
-            <div className="text-center">
-              <div className="text-7xl mb-4">{item.type === 'plant' ? '🌿' : '🐟'}</div>
-              <p className="text-sm font-mono text-zinc-500">{item.image}</p>
-            </div>
-          </div>
+          <ImageCarousel images={item.images} />
         </AnimatedSection>
 
         <div>
@@ -78,7 +74,14 @@ export default async function LivestockDetailPage({ params }) {
             <h1 className="text-2xl sm:text-3xl font-bold mt-1 mb-1 text-zinc-800 dark:text-white">
               {item.name}
             </h1>
-            <p className="text-sm text-zinc-400 italic mb-6">{item.scientificName}</p>
+            <p className="text-sm text-zinc-400 italic mb-4">{item.scientificName}</p>
+            {item.showPrice !== 0 && item.price && item.price !== '0' ? (
+              <p className="text-2xl font-mono font-bold text-cyan-600 dark:text-cyan-400 mb-4">
+                ₹{item.price}
+              </p>
+            ) : (
+              <p className="text-sm text-zinc-400 font-medium mb-4">Price on request</p>
+            )}
           </AnimatedSection>
 
           <AnimatedSection delay={0.2}>
@@ -94,6 +97,12 @@ export default async function LivestockDetailPage({ params }) {
               <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-lg p-3 text-center">
                 <p className="text-[10px] uppercase tracking-wider text-zinc-500 mb-1">Temperament</p>
                 <p className="text-sm font-semibold text-zinc-800 dark:text-white">{item.temperament}</p>
+              </div>
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-lg p-3 text-center col-span-3">
+                <p className="text-[10px] uppercase tracking-wider text-zinc-500 mb-1">Availability</p>
+                <p className={`text-sm font-semibold ${item.quantity > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
+                  {item.quantity > 0 ? '✓ In Stock' : '✕ Out of Stock'}
+                </p>
               </div>
             </div>
           </AnimatedSection>

@@ -13,10 +13,10 @@ export default function EditProject({ params }) {
       backHref="/admin/projects"
       fields={[
         { key: 'title', label: 'Project Title', required: true },
-        { key: 'date', label: 'Date', placeholder: 'YYYY-MM-DD' },
+        { key: 'date', label: 'Date', type: 'date' },
         { key: 'description', label: 'Description', type: 'textarea', required: true },
         { key: 'tags', label: 'Tags', type: 'tags', itemLabel: 'tag' },
-        { key: 'images', label: 'Image Paths', type: 'array', itemLabel: 'image path' },
+        { key: 'images', label: 'Images', type: 'images' },
       ]}
     />
   )

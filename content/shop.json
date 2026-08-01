@@ -15,9 +15,11 @@
     "sunday": "11:30 AM - 8:30 PM"
   },
   "social": {
-    "instagram": { "url": "https://instagram.com/fishybizness", "label": "@fishybizness" },
+    "instagram": { "url": "https://www.instagram.com/marinehydfb?utm_source=qr&igsh=YWVvOXQzcGl5M2Zs", "label": "@marinehydfb" },
+    "instagram2": { "url": "https://www.instagram.com/fishybizn?utm_source=qr&igsh=Mmcxamx4cTVkc2xx", "label": "@fishybizn" },
     "youtube": { "url": "https://youtube.com/@fishybizness", "label": "Fishy Bizness" },
-    "facebook": { "url": "https://www.facebook.com/653765514686336/", "label": "Fishy Bizness" },
+    "facebook": { "url": "https://www.fb.com/fishybizn", "label": "Fishy Bizness" },
+    "blogspot": { "url": "https://fishybizn.blogspot.com/?m=1", "label": "Blog" },
     "whatsapp": { "url": "https://wa.me/917702855385", "label": "Chat on WhatsApp" },
     "googleMaps": { "url": "https://share.google/MFEzzh4uC2wmYFUke", "label": "Find us on Google" }
   }

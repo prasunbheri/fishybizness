@@ -10,10 +10,10 @@ export default function NewProject() {
       backHref="/admin/projects"
       fields={[
         { key: 'title', label: 'Project Title', required: true },
-        { key: 'date', label: 'Date', placeholder: 'YYYY-MM-DD', help: 'e.g. 2025-12-15' },
+        { key: 'date', label: 'Date', type: 'date' },
         { key: 'description', label: 'Description', type: 'textarea', required: true },
         { key: 'tags', label: 'Tags', type: 'tags', itemLabel: 'tag', help: 'e.g. planted, reef, nano' },
-        { key: 'images', label: 'Image Paths', type: 'array', itemLabel: 'image path', help: 'e.g. /images/projects/example.jpg' },
+        { key: 'images', label: 'Images', type: 'images' },
       ]}
     />
   )

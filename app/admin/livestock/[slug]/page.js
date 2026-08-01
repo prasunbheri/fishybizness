@@ -36,13 +36,16 @@ export default function EditLivestock({ params }) {
           type: 'select',
           options: ['Peaceful', 'Semi-aggressive', 'Aggressive'],
         },
+        { key: 'quantity', label: 'Available Count', type: 'number', step: '1', required: true },
+        { key: 'price', label: 'Price', type: 'number', step: '0.01', help: 'Enter price in INR without ₹ symbol' },
+        { key: 'showPrice', label: 'Show price on site', type: 'checkbox' },
         {
           key: 'description',
           label: 'Description',
           type: 'textarea',
           required: true,
         },
-        { key: 'image', label: 'Image Path', placeholder: '/images/livestock/example.jpg' },
+        { key: 'images', label: 'Images', type: 'images' },
       ]}
     />
   )

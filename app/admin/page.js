@@ -25,6 +25,14 @@ const sections = [
     color: 'border-emerald-200 dark:border-emerald-800',
     bg: 'bg-emerald-50 dark:bg-emerald-900/10',
   },
+  {
+    title: 'Settings',
+    href: '/admin/settings',
+    icon: '⚙️',
+    desc: 'Update store info, contact, and hours',
+    color: 'border-purple-200 dark:border-purple-800',
+    bg: 'bg-purple-50 dark:bg-purple-900/10',
+  },
 ]
 
 export default function AdminDashboard() {

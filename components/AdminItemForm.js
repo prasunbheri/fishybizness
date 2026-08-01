@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
@@ -9,6 +9,8 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
   const [loading, setLoading] = useState(!!slug)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -16,15 +18,20 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
       fetch(`/api/admin/${type}/${slug}`)
         .then(r => r.json())
         .then(data => {
-          setForm(data)
+          const f = { ...data }
+          fields.forEach(fld => {
+            if (fld.type === 'images' && !f[fld.key]) {
+              f[fld.key] = f.image ? [f.image] : []
+            }
+          })
+          setForm(f)
           setLoading(false)
         })
         .catch(() => setLoading(false))
     } else {
       const initial = {}
       fields.forEach(f => {
-        if (f.type === 'array') initial[f.key] = []
-        else if (f.type === 'tags') initial[f.key] = []
+        if (f.type === 'array' || f.type === 'tags' || f.type === 'images') initial[f.key] = []
         else initial[f.key] = ''
       })
       setForm(initial)
@@ -32,7 +39,13 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
   }, [slug])
 
   function set(key, value) {
-    setForm(prev => ({ ...prev, [key]: value }))
+    setForm(prev => {
+      const next = { ...prev, [key]: value }
+      fields.forEach(f => {
+        if (f.dependsOn === key) next[f.key] = ''
+      })
+      return next
+    })
   }
 
   async function handleSubmit(e) {
@@ -75,6 +88,25 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
     set(key, form[key].filter((_, i) => i !== index))
   }
 
+  async function handleUpload(key, files) {
+    if (!files.length) return
+    setUploading(true)
+    try {
+      const fd = new FormData()
+      fd.set('type', type)
+      for (const file of files) fd.append('files', file)
+      const res = await fetch('/api/upload', { method: 'POST', body: fd })
+      if (!res.ok) throw new Error('Upload failed')
+      const { paths } = await res.json()
+      set(key, [...(form[key] || []), ...paths])
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
+
   if (loading) {
     return <div className="text-zinc-400 text-sm py-8">Loading...</div>
   }
@@ -109,10 +141,14 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
                 className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 text-zinc-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 required={f.required}
               >
-                <option value="">Select...</option>
-                {f.options.map(o => (
-                  <option key={o} value={o}>{o}</option>
-                ))}
+                <option value="">{f.placeholder || 'Select...'}</option>
+                {f.options
+                  .filter(o => !f.dependsOn || (typeof o === 'object' && o[f.dependsOn] === form[f.dependsOn]))
+                  .map(o => {
+                    const value = typeof o === 'object' ? o.name : o
+                    const label = typeof o === 'object' ? (o.label || o.name) : o
+                    return <option key={value} value={value}>{label}</option>
+                  })}
               </select>
             ) : f.type === 'number' ? (
               <input
@@ -149,6 +185,49 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
                 <button type="button" onClick={() => addArrayItem(f.key)} className="text-xs text-cyan-600 dark:text-cyan-400 hover:underline">
                   + Add {f.itemLabel || 'tag'}
                 </button>
+              </div>
+            ) : f.type === 'checkbox' ? (
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={!!form[f.key]}
+                  onChange={e => set(f.key, e.target.checked ? 1 : 0)}
+                  className="w-4 h-4 rounded border-zinc-300 dark:border-zinc-600 text-cyan-500 focus:ring-cyan-500"
+                />
+                <span className="text-sm text-zinc-700 dark:text-zinc-300">{f.label}</span>
+              </label>
+            ) : f.type === 'images' ? (
+              <div>
+                {(form[f.key] || []).length > 0 && (
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-3">
+                    {(form[f.key] || []).map((img, i) => (
+                      <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-zinc-100 dark:bg-zinc-700 group">
+                        <div
+                          className="w-full h-full bg-cover bg-center"
+                          style={{ backgroundImage: `url(${img})` }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeArrayItem(f.key, i)}
+                          className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 hover:bg-red-500 text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          &times;
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className="flex gap-2">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={e => handleUpload(f.key, e.target.files)}
+                    className="block text-sm text-zinc-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-cyan-500 file:text-zinc-900 hover:file:bg-cyan-400 file:cursor-pointer file:transition-colors"
+                  />
+                  {uploading && <span className="text-xs text-zinc-400 self-center">Uploading...</span>}
+                </div>
               </div>
             ) : (
               <input

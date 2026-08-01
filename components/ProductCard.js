@@ -4,6 +4,10 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 
 export default function ProductCard({ product, index }) {
+  const img = product.images?.[0]
+  const outOfStock = product.quantity <= 0
+  const showPrice = product.showPrice !== 0 && product.price && product.price !== '0'
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -12,23 +16,41 @@ export default function ProductCard({ product, index }) {
       transition={{ duration: 0.5, delay: index * 0.05 }}
     >
       <Link href={`/products/${product.slug}`} className="group block">
-        <div className="relative aspect-square overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800 mb-3">
-          <div className="w-full h-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-800 flex items-center justify-center text-zinc-400 dark:text-zinc-600 text-4xl">
-            🐟
-          </div>
-          <motion.div
-            className="absolute inset-0 bg-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          />
-          <div className="absolute top-3 right-3">
-            <span className="text-xs font-mono bg-white/90 dark:bg-zinc-900/90 text-zinc-800 dark:text-zinc-200 px-2 py-1 rounded-md backdrop-blur-sm">
-              ${product.price}
-            </span>
+        <div className="relative aspect-square overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800">
+          {img ? (
+            <div
+              className="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+              style={{ backgroundImage: `url(${img})` }}
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-800 flex items-center justify-center text-zinc-400 dark:text-zinc-600 text-4xl">
+              🐟
+            </div>
+          )}
+
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+
+          {outOfStock && (
+            <div className="absolute top-3 left-3">
+              <span className="text-white text-[10px] font-semibold uppercase tracking-wider bg-red-500 px-2 py-1 rounded">Out of Stock</span>
+            </div>
+          )}
+
+          <div className="absolute bottom-0 inset-x-0 p-3">
+            <h3 className="font-semibold text-sm text-white leading-snug [text-shadow:_0_1px_4px_rgb(0_0_0_/_0.6)]">
+              {product.name}
+            </h3>
+            <p className="text-[10px] uppercase tracking-wider text-zinc-300 mt-0.5">{product.category}</p>
           </div>
         </div>
-        <h3 className="font-medium text-sm text-zinc-800 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors leading-snug">
-          {product.name}
-        </h3>
-        <p className="text-xs text-zinc-400 capitalize mt-0.5">{product.category}</p>
+
+        <div className="mt-2">
+          {showPrice ? (
+            <p className="font-mono text-sm font-bold text-cyan-600 dark:text-cyan-400">₹{product.price}</p>
+          ) : (
+            <p className="text-xs text-zinc-400">Price on request</p>
+          )}
+        </div>
       </Link>
     </motion.div>
   )
