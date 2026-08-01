@@ -88,6 +88,13 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
     set(key, form[key].filter((_, i) => i !== index))
   }
 
+  function setAsCover(key, index) {
+    const arr = form[key] || []
+    if (index === 0 || arr.length < 2) return
+    const img = arr[index]
+    set(key, [img, ...arr.filter((_, i) => i !== index)])
+  }
+
   async function handleUpload(key, files) {
     if (!files.length) return
     setUploading(true)
@@ -206,6 +213,20 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
                           className="w-full h-full bg-cover bg-center"
                           style={{ backgroundImage: `url(${img})` }}
                         />
+                        {i === 0 && (
+                          <span className="absolute bottom-1 left-1 text-[10px] font-semibold uppercase tracking-wider bg-cyan-500 text-zinc-900 px-1.5 py-0.5 rounded">
+                            Cover
+                          </span>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => setAsCover(f.key, i)}
+                          disabled={i === 0}
+                          title={i === 0 ? 'This is the cover image' : 'Set as cover image'}
+                          className="absolute top-1 left-1 w-6 h-6 rounded-full bg-black/50 hover:bg-cyan-500 disabled:opacity-0 text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 disabled:group-hover:opacity-0 transition-opacity"
+                        >
+                          ★
+                        </button>
                         <button
                           type="button"
                           onClick={() => removeArrayItem(f.key, i)}
@@ -228,6 +249,9 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
                   />
                   {uploading && <span className="text-xs text-zinc-400 self-center">Uploading...</span>}
                 </div>
+                {(form[f.key] || []).length > 1 && (
+                  <p className="text-xs text-zinc-400 mt-1.5">Hover an image and tap ★ to make it the cover. The first image is shown as the thumbnail.</p>
+                )}
               </div>
             ) : (
               <input
