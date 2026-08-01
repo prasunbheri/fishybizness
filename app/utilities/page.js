@@ -79,6 +79,41 @@ const utilities = [
     desc: 'An interactive aquarium care routine from daily feeding checks to quarterly deep cleans — with progress saved on your device.',
     tags: ['Checklist', 'Care', 'Routine'],
   },
+  {
+    href: '/utilities/water-change',
+    icon: '🪣',
+    title: 'Water Change Calculator',
+    desc: 'Calculate how many litres to remove for a partial water change and the dechlorinator dose you need for the fresh water.',
+    tags: ['Water Change', 'Dechlorinator', 'Dosing'],
+  },
+  {
+    href: '/utilities/lighting',
+    icon: '💡',
+    title: 'Lighting Calculator',
+    desc: 'Find the right lumens and wattage for your planted tank based on volume and whether you want low, medium or high light.',
+    tags: ['Lighting', 'Lumens', 'Planted'],
+  },
+  {
+    href: '/utilities/tap-mix',
+    icon: '🧪',
+    title: 'Tap-Mix (RO/Tap) Calculator',
+    desc: 'Mix RO/DI water with tap water to hit a target hardness or TDS — essential for soft-water fish, shrimp and discus.',
+    tags: ['RO Water', 'Hardness', 'TDS'],
+  },
+  {
+    href: '/utilities/feeding-calculator',
+    icon: '🍽️',
+    title: 'Feeding Calculator',
+    desc: 'Estimate daily food from your fish\'s adult size and numbers — with grams, pinches and feeding frequency.',
+    tags: ['Feeding', 'Food', 'Dosing'],
+  },
+  {
+    href: '/utilities/biotope',
+    icon: '🌍',
+    title: 'Stocking by Biotope',
+    desc: 'Enter your water hardness and temperature to see which popular fish naturally suit your tank.',
+    tags: ['Biotope', 'Water', 'Hardness'],
+  },
 ]
 
 export default function UtilitiesPage() {
