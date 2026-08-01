@@ -1,6 +1,7 @@
 import { getProjects, getProject } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
 import ProjectDetailClient from "./ProjectDetailClient"
+import ViewTracker from "@/components/ViewTracker"
 
 export const revalidate = 0
 
@@ -34,6 +35,7 @@ export default async function ProjectDetailPage({ params }) {
 
   return (
     <div className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+      <ViewTracker type="project" slug={project.slug} />
       <AnimatedSection>
         <span className="text-xs uppercase tracking-widest text-cyan-600 dark:text-cyan-400 font-medium">
           {project.date}

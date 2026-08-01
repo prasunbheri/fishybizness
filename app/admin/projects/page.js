@@ -11,6 +11,7 @@ export default function AdminProjects() {
       fields={[
         { key: 'title', label: 'Title', render: v => <span className="font-medium">{v}</span> },
         { key: 'date', label: 'Date' },
+        { key: 'views', label: 'Views', render: v => <span className="font-mono">{v || 0}</span> },
         { key: 'tags', label: 'Tags', render: (v) => (
           <div className="flex flex-wrap gap-1">
             {(v || []).slice(0, 3).map(t => (
