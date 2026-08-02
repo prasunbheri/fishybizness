@@ -25,7 +25,7 @@ function ProjectThumb({ src, title }) {
   return (
     <LazyBackground
       src={src}
-      className="w-full h-full bg-cover bg-center transition-opacity duration-500"
+      className="w-full h-full bg-cover bg-center transition duration-500 group-hover:scale-[1.15]"
     />
   )
 }
