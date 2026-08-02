@@ -5,21 +5,38 @@ import LazyBackground from './LazyBackground'
 
 export default function ImageCarousel({ images, className = '' }) {
   const [current, setCurrent] = useState(0)
+  const [prevIdx, setPrevIdx] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
 
+  const changeTo = useCallback(
+    i => {
+      setPrevIdx(current)
+      setCurrent(i)
+    },
+    [current]
+  )
+
   const next = useCallback(() => {
+    setPrevIdx(current)
     setCurrent(i => (i + 1) % images.length)
-  }, [images.length])
+  }, [images.length, current])
 
   const prev = useCallback(() => {
+    setPrevIdx(current)
     setCurrent(i => (i === 0 ? images.length - 1 : i - 1))
-  }, [images.length])
+  }, [images.length, current])
 
   useEffect(() => {
     if (isHovering) return
     const timer = setInterval(next, 4000)
     return () => clearInterval(timer)
   }, [next, isHovering])
+
+  useEffect(() => {
+    if (prevIdx === null) return
+    const timer = setTimeout(() => setPrevIdx(null), 800)
+    return () => clearTimeout(timer)
+  }, [current, prevIdx])
 
   if (!images || images.length === 0) {
     return (
@@ -37,6 +54,7 @@ export default function ImageCarousel({ images, className = '' }) {
         {images.map((img, i) => {
           const isActive = i === current
           const isNext = i === (current + 1) % images.length
+          const isPrev = i === prevIdx
           return (
             <div
               key={i}
@@ -44,7 +62,7 @@ export default function ImageCarousel({ images, className = '' }) {
               style={{ opacity: isActive ? 1 : 0 }}
             >
               <LazyBackground
-                src={isActive || isNext ? img : null}
+                src={isActive || isNext || isPrev ? img : null}
                 eager={isActive}
                 watermark
                 className="w-full h-full bg-cover bg-center"
@@ -71,7 +89,7 @@ export default function ImageCarousel({ images, className = '' }) {
               {images.map((_, i) => (
                 <button
                   key={i}
-                  onClick={() => setCurrent(i)}
+                  onClick={() => changeTo(i)}
                   className={`rounded-full transition-all ${i === current ? 'bg-white w-3 h-3' : 'bg-white/50 hover:bg-white/70 w-2.5 h-2.5'}`}
                 />
               ))}
@@ -86,7 +104,7 @@ export default function ImageCarousel({ images, className = '' }) {
             <button
               key={i}
               type="button"
-              onClick={() => setCurrent(i)}
+              onClick={() => changeTo(i)}
               aria-label={`View image ${i + 1}`}
               className={`relative w-16 h-16 shrink-0 rounded-lg overflow-hidden transition-all ${
                 i === current
