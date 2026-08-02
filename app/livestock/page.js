@@ -9,11 +9,30 @@ export const revalidate = 0
 
 const typeOrder = { fish: 0, invertebrate: 1, plant: 2 }
 const PER_PAGE_OPTIONS = [10, 20, 30, 40, 50]
+const temperamentOrder = ['Peaceful', 'Semi-aggressive', 'Aggressive', 'Low light', 'Moderate light', 'High light']
+
+function groupByTemperament(items) {
+  const map = new Map()
+  for (const item of items) {
+    const key = item.temperament || 'Unspecified'
+    if (!map.has(key)) map.set(key, [])
+    map.get(key).push(item)
+  }
+  return [...map.entries()].sort((a, b) => {
+    const ia = temperamentOrder.indexOf(a[0])
+    const ib = temperamentOrder.indexOf(b[0])
+    if (ia === -1 && ib === -1) return a[0].localeCompare(b[0])
+    if (ia === -1) return 1
+    if (ib === -1) return -1
+    return ia - ib
+  })
+}
 
 export default async function LivestockPage({ searchParams }) {
   const params = await searchParams
   const activeType = params?.type || null
   const sort = params?.sort || 'name'
+  const grouped = params?.group === 'temperament'
   const perPageRaw = Number(params?.perPage)
   const perPage = PER_PAGE_OPTIONS.includes(perPageRaw) ? perPageRaw : 30
   const pageRaw = Number(params?.page)
@@ -41,6 +60,11 @@ export default async function LivestockPage({ searchParams }) {
   const totalPages = Math.max(1, Math.ceil(total / perPage))
   const currentPage = Math.min(page, totalPages)
   const paged = livestock.slice((currentPage - 1) * perPage, currentPage * perPage)
+  const groups = grouped ? groupByTemperament(livestock) : []
+
+  const baseQuery = new URLSearchParams()
+  if (activeType) baseQuery.set('type', activeType)
+  baseQuery.set('sort', sort)
 
   return (
     <div className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -79,24 +103,64 @@ export default async function LivestockPage({ searchParams }) {
               {type}
             </Link>
           ))}
-          <span className="ml-auto">
+          <span className="ml-auto flex items-center gap-2">
+            <Link
+              href={grouped ? `/livestock?${baseQuery.toString()}` : `/livestock?${baseQuery.toString()}&group=temperament`}
+              className={`text-xs uppercase tracking-wider px-3 py-1.5 rounded-full font-medium transition-colors ${
+                grouped
+                  ? 'bg-cyan-500 text-white'
+                  : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+              }`}
+            >
+              Group by temperament
+            </Link>
             <SortSelect value={sort} />
           </span>
         </div>
       </AnimatedSection>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-        {livestock.length === 0 && (
-          <p className="col-span-full text-center text-zinc-500 dark:text-zinc-400 text-sm">
-            No {activeType || 'livestock'} available right now. Check back soon!
-          </p>
-        )}
-        {paged.map((item, i) => (
-          <LivestockCard key={item.id} item={item} index={i} />
-        ))}
-      </div>
+      {grouped ? (
+        <div className="space-y-14">
+          {livestock.length === 0 && (
+            <p className="text-center text-zinc-500 dark:text-zinc-400 text-sm">
+              No {activeType || 'livestock'} available right now. Check back soon!
+            </p>
+          )}
+          {groups.map(([temperament, items]) => (
+            <section key={temperament}>
+              <AnimatedSection>
+                <h2 className="text-2xl font-bold text-zinc-800 dark:text-white mb-1 flex items-baseline gap-2">
+                  {temperament}
+                  <span className="text-sm font-medium text-zinc-400 dark:text-zinc-500">
+                    {items.length} {items.length === 1 ? 'item' : 'items'}
+                  </span>
+                </h2>
+                <div className="h-px bg-zinc-200 dark:bg-zinc-800 mb-6" />
+              </AnimatedSection>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                {items.map((item, i) => (
+                  <LivestockCard key={item.id} item={item} index={i} />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+            {livestock.length === 0 && (
+              <p className="col-span-full text-center text-zinc-500 dark:text-zinc-400 text-sm">
+                No {activeType || 'livestock'} available right now. Check back soon!
+              </p>
+            )}
+            {paged.map((item, i) => (
+              <LivestockCard key={item.id} item={item} index={i} />
+            ))}
+          </div>
 
-      <Pagination path="/livestock" total={total} page={currentPage} perPage={perPage} />
+          <Pagination path="/livestock" total={total} page={currentPage} perPage={perPage} />
+        </>
+      )}
     </div>
   )
 }
