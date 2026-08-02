@@ -5,6 +5,7 @@ import LazyBackground from './LazyBackground'
 
 export default function ImageCarousel({ images, className = '' }) {
   const [current, setCurrent] = useState(0)
+  const [isHovering, setIsHovering] = useState(false)
 
   const next = useCallback(() => {
     setCurrent(i => (i + 1) % images.length)
@@ -15,9 +16,10 @@ export default function ImageCarousel({ images, className = '' }) {
   }, [images.length])
 
   useEffect(() => {
+    if (isHovering) return
     const timer = setInterval(next, 4000)
     return () => clearInterval(timer)
-  }, [next])
+  }, [next, isHovering])
 
   if (!images || images.length === 0) {
     return (
@@ -30,7 +32,7 @@ export default function ImageCarousel({ images, className = '' }) {
   }
 
   return (
-    <>
+    <div onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
       <div className={`relative aspect-square rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 group ${className}`}>
         {images.map((img, i) => {
           const isActive = i === current
@@ -100,6 +102,6 @@ export default function ImageCarousel({ images, className = '' }) {
           ))}
         </div>
       )}
-    </>
+    </div>
   )
 }

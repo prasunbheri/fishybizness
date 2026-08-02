@@ -1,8 +1,7 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import LazyBackground from './LazyBackground'
 
 function ProjectThumb({ src, title }) {
@@ -62,30 +61,17 @@ function ProjectCard({ project }) {
 }
 
 export default function ScrollingProjects({ projects }) {
-  const trackRef = useRef(null)
-
   if (!projects.length) return null
 
   const duplicated = [...projects, ...projects]
 
   return (
     <div className="relative overflow-hidden">
-      <motion.div
-        ref={trackRef}
-        className="flex gap-6 w-max"
-        animate={{ x: ['0%', '-50%'] }}
-        transition={{
-          x: {
-            duration: 60,
-            repeat: Infinity,
-            ease: 'linear',
-          },
-        }}
-      >
+      <div className="flex gap-6 w-max marquee-track">
         {duplicated.map((project, i) => (
           <ProjectCard key={`${project.id}-${i}`} project={project} />
         ))}
-      </motion.div>
+      </div>
 
       <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-zinc-900 dark:via-zinc-900/80 pointer-events-none" />
       <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-white via-white/80 to-transparent dark:from-zinc-900 dark:via-zinc-900/80 pointer-events-none" />
