@@ -7,6 +7,7 @@ import RichTextEditor from './RichTextEditor'
 
 export default function AdminItemForm({ type, slug, title, fields, backHref }) {
   const [form, setForm] = useState({})
+  const [savedForm, setSavedForm] = useState(null)
   const [loading, setLoading] = useState(!!slug)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -26,6 +27,7 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
             }
           })
           setForm(f)
+          setSavedForm(JSON.parse(JSON.stringify(f)))
           setLoading(false)
         })
         .catch(() => setLoading(false))
@@ -36,6 +38,7 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
         else initial[f.key] = ''
       })
       setForm(initial)
+      setSavedForm(JSON.parse(JSON.stringify(initial)))
     }
   }, [slug])
 
@@ -124,6 +127,13 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
     }
   }
 
+  const hasChanges = !!savedForm && JSON.stringify(form) !== JSON.stringify(savedForm)
+
+  function undoChanges() {
+    setForm(JSON.parse(JSON.stringify(savedForm)))
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
   if (loading) {
     return <div className="text-zinc-400 text-sm py-8">Loading...</div>
   }
@@ -134,7 +144,14 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
         &larr; Back
       </Link>
 
-      <h1 className="text-2xl font-bold text-zinc-800 dark:text-white mb-6">{title}</h1>
+      <h1 className="text-2xl font-bold text-zinc-800 dark:text-white mb-6 flex items-center gap-3">
+        {title}
+        {hasChanges && (
+          <span className="text-[10px] uppercase tracking-wider px-2 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 font-medium">
+            Unsaved changes
+          </span>
+        )}
+      </h1>
 
       <form onSubmit={handleSubmit} className="max-w-2xl space-y-5">
         {fields.map(f => (
@@ -294,6 +311,15 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
           >
             {saving ? 'Saving...' : slug ? 'Save Changes' : 'Create'}
           </button>
+          {hasChanges && (
+            <button
+              type="button"
+              onClick={undoChanges}
+              className="px-6 py-2.5 border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 font-medium rounded-lg transition-colors text-sm hover:bg-zinc-50 dark:hover:bg-zinc-700"
+            >
+              ↩ Undo changes
+            </button>
+          )}
           <Link
             href={backHref || `/admin/${type}`}
             className="px-6 py-2.5 border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 font-medium rounded-lg transition-colors text-sm hover:bg-zinc-50 dark:hover:bg-zinc-700"
