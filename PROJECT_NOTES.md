@@ -209,6 +209,7 @@ All static pages under `app/utilities/`, share `utilityUi.js`. Index list in `ap
 ## 12. Git History — Feature Milestones (most recent first)
 
 - (next) Similar products/livestock on detail pages
+- `2e4194e` Font size (px number input + presets) in rich text editor
 - `ab082a8` Fix rich-text undo (revision-based content sync; Ctrl+Z now reverts description)
 - `8a3779a` Zoom home projects images to 115% on hover
 - `92fabd6` Add group by temperament to livestock listing
