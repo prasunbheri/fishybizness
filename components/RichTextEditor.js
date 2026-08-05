@@ -21,15 +21,17 @@ function ToolbarButton({ label, title, onClick }) {
   )
 }
 
-export default function RichTextEditor({ value = '', onChange, placeholder = '', minHeight = '120px' }) {
+export default function RichTextEditor({ value = '', onChange, placeholder = '', minHeight = '120px', revision = 0 }) {
   const ref = useRef(null)
+  const valueRef = useRef(value)
+  valueRef.current = value
 
   useEffect(() => {
     const el = ref.current
-    if (el && document.activeElement !== el && el.innerHTML !== (value || '')) {
-      el.innerHTML = value || ''
+    if (el && el.innerHTML !== (valueRef.current || '')) {
+      el.innerHTML = valueRef.current || ''
     }
-  }, [value])
+  }, [revision])
 
   function handleInput() {
     if (ref.current) onChange(sanitizeHtml(ref.current.innerHTML))

@@ -10,7 +10,7 @@ const MAX_HISTORY = 100
 function formReducer(state, action) {
   switch (action.type) {
     case 'init':
-      return { form: action.form, history: [action.form], index: 0 }
+      return { form: action.form, history: [action.form], index: 0, revision: 0 }
     case 'set': {
       const { key, value, fields } = action
       const next = { ...state.form, [key]: value }
@@ -19,17 +19,17 @@ function formReducer(state, action) {
       })
       const truncated = state.history.slice(0, state.index + 1)
       const history = [...truncated, next].slice(-MAX_HISTORY)
-      return { form: next, history, index: history.length - 1 }
+      return { form: next, history, index: history.length - 1, revision: state.revision }
     }
     case 'undo': {
       if (state.index <= 0) return state
       const index = state.index - 1
-      return { ...state, form: state.history[index], index }
+      return { ...state, form: state.history[index], index, revision: state.revision + 1 }
     }
     case 'redo': {
       if (state.index >= state.history.length - 1) return state
       const index = state.index + 1
-      return { ...state, form: state.history[index], index }
+      return { ...state, form: state.history[index], index, revision: state.revision + 1 }
     }
     default:
       return state
@@ -237,6 +237,7 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
                 onChange={v => set(f.key, v)}
                 placeholder={f.placeholder || f.label}
                 minHeight={f.rows ? `${f.rows * 28}px` : '140px'}
+                revision={state.revision}
               />
             ) : f.type === 'select' ? (
               <select
