@@ -2,6 +2,7 @@ import { getProducts, getProduct } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
 import ImageCarousel from "@/components/ImageCarousel"
 import RichContent from "@/components/RichContent"
+import ProductCard from "@/components/ProductCard"
 import ViewTracker from "@/components/ViewTracker"
 import { buildWhatsAppLink } from "@/lib/whatsapp"
 import { stripTags } from "@/lib/sanitize"
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }) {
 
 export default async function ProductDetailPage({ params }) {
   const { slug } = await params
-  const product = await getProduct(slug)
+  const [product, allProducts] = await Promise.all([getProduct(slug), getProducts()])
 
   if (!product) {
     return (
@@ -37,6 +38,13 @@ export default async function ProductDetailPage({ params }) {
       </div>
     )
   }
+
+  const similar = allProducts
+    .filter(p => p.slug !== product.slug && p.category === product.category && p.subcategory === product.subcategory)
+    .concat(
+      allProducts.filter(p => p.slug !== product.slug && p.category === product.category && p.subcategory !== product.subcategory)
+    )
+    .slice(0, 4)
 
   const h = await headers()
   const host = h.get('host') || 'fishybiz.duckdns.org'
@@ -121,6 +129,24 @@ export default async function ProductDetailPage({ params }) {
           </AnimatedSection>
         </div>
       </div>
+
+      {similar.length > 0 && (
+        <section className="mt-20">
+          <AnimatedSection>
+            <div className="mb-8">
+              <span className="text-xs uppercase tracking-widest text-cyan-600 dark:text-cyan-400 font-medium">
+                {product.subcategory ? product.subcategory : product.category}
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-bold mt-1 text-zinc-800 dark:text-white">Similar Products</h2>
+            </div>
+          </AnimatedSection>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {similar.map((p, i) => (
+              <ProductCard key={p.id} product={p} index={i} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }

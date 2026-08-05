@@ -61,9 +61,9 @@ Memory file for future AI sessions. Read this before touching the code so nothin
 |---|---|
 | `/` | Hero (shop info + optional video/image slideshow), slow-scrolling Recent Projects marquee, Featured Products (first 4), Featured Livestock (first 4), What We Do, social/contact CTA. `revalidate = 0`. |
 | `/products` | Category + subcategory filter chips (with product counts), sort select, per-page selector (10–50), pagination. |
-| `/products/[slug]` | ImageCarousel (thumbnails, crossfade, watermark), RichContent description, price/quantity, WhatsApp enquiry button (prefilled with product name + link), ViewTracker. |
+| `/products/[slug]` | ImageCarousel (thumbnails, crossfade, watermark), RichContent description, price/quantity, WhatsApp enquiry button (prefilled with product name + link), ViewTracker, **Similar Products** (same category, same subcategory first, up to 4). |
 | `/livestock` | Type filter (fish/invertebrate/plant), sort, per-page, pagination, and **Group by temperament** toggle (`?group=temperament`) rendering section headers with counts. |
-| `/livestock/[slug]` | Carousel, specs (difficulty, tank size, temperament, etc.), RichContent, ViewTracker. |
+| `/livestock/[slug]` | Carousel, specs (difficulty, tank size, temperament, etc.), RichContent, ViewTracker, **Similar Livestock** (same type, up to 4). |
 | `/projects` | Project grid. |
 | `/projects/[slug]` | Carousel, RichContent description, ViewTracker. |
 | `/utilities` | Card grid of all 16 utilities. |
@@ -208,6 +208,7 @@ All static pages under `app/utilities/`, share `utilityUi.js`. Index list in `ap
 
 ## 12. Git History — Feature Milestones (most recent first)
 
+- (next) Similar products/livestock on detail pages
 - (next) Undo option for product/livestock/project edit forms
 - `8a3779a` Zoom home projects images to 115% on hover
 - `92fabd6` Add group by temperament to livestock listing

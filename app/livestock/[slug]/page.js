@@ -2,6 +2,7 @@ import { getLivestock, getLivestockItem } from "@/lib/data"
 import AnimatedSection from "@/components/AnimatedSection"
 import ImageCarousel from "@/components/ImageCarousel"
 import RichContent from "@/components/RichContent"
+import LivestockCard from "@/components/LivestockCard"
 import ViewTracker from "@/components/ViewTracker"
 import { stripTags } from "@/lib/sanitize"
 import Link from "next/link"
@@ -37,7 +38,7 @@ const difficultyColors = {
 
 export default async function LivestockDetailPage({ params }) {
   const { slug } = await params
-  const item = await getLivestockItem(slug)
+  const [item, allLivestock] = await Promise.all([getLivestockItem(slug), getLivestock()])
 
   if (!item) {
     return (
@@ -47,6 +48,10 @@ export default async function LivestockDetailPage({ params }) {
       </div>
     )
   }
+
+  const similar = allLivestock
+    .filter(l => l.slug !== item.slug && l.type === item.type)
+    .slice(0, 4)
 
   return (
     <div className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
@@ -116,6 +121,22 @@ export default async function LivestockDetailPage({ params }) {
           </AnimatedSection>
         </div>
       </div>
+
+      {similar.length > 0 && (
+        <section className="mt-20">
+          <AnimatedSection>
+            <div className="mb-8">
+              <span className="text-xs uppercase tracking-widest text-cyan-600 dark:text-cyan-400 font-medium">{item.type}</span>
+              <h2 className="text-2xl sm:text-3xl font-bold mt-1 text-zinc-800 dark:text-white">Similar Livestock</h2>
+            </div>
+          </AnimatedSection>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {similar.map((l, i) => (
+              <LivestockCard key={l.id} item={l} index={i} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }
