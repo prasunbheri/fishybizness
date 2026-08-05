@@ -1,13 +1,48 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useReducer } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import RichTextEditor from './RichTextEditor'
 
+const MAX_HISTORY = 100
+
+function formReducer(state, action) {
+  switch (action.type) {
+    case 'init':
+      return { form: action.form, history: [action.form], index: 0 }
+    case 'set': {
+      const { key, value, fields } = action
+      const next = { ...state.form, [key]: value }
+      fields.forEach(f => {
+        if (f.dependsOn === key) next[f.key] = ''
+      })
+      const truncated = state.history.slice(0, state.index + 1)
+      const history = [...truncated, next].slice(-MAX_HISTORY)
+      return { form: next, history, index: history.length - 1 }
+    }
+    case 'undo': {
+      if (state.index <= 0) return state
+      const index = state.index - 1
+      return { ...state, form: state.history[index], index }
+    }
+    case 'redo': {
+      if (state.index >= state.history.length - 1) return state
+      const index = state.index + 1
+      return { ...state, form: state.history[index], index }
+    }
+    default:
+      return state
+  }
+}
+
 export default function AdminItemForm({ type, slug, title, fields, backHref }) {
-  const [form, setForm] = useState({})
-  const [savedForm, setSavedForm] = useState(null)
+  const [state, dispatch] = useReducer(
+    formReducer,
+    null,
+    () => ({ form: {}, history: [], index: -1 })
+  )
+  const { form, history, index } = state
   const [loading, setLoading] = useState(!!slug)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -26,8 +61,7 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
               f[fld.key] = f.image ? [f.image] : []
             }
           })
-          setForm(f)
-          setSavedForm(JSON.parse(JSON.stringify(f)))
+          dispatch({ type: 'init', form: f })
           setLoading(false)
         })
         .catch(() => setLoading(false))
@@ -37,20 +71,30 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
         if (f.type === 'array' || f.type === 'tags' || f.type === 'images') initial[f.key] = []
         else initial[f.key] = ''
       })
-      setForm(initial)
-      setSavedForm(JSON.parse(JSON.stringify(initial)))
+      dispatch({ type: 'init', form: initial })
     }
   }, [slug])
 
   function set(key, value) {
-    setForm(prev => {
-      const next = { ...prev, [key]: value }
-      fields.forEach(f => {
-        if (f.dependsOn === key) next[f.key] = ''
-      })
-      return next
-    })
+    dispatch({ type: 'set', key, value, fields })
   }
+
+  useEffect(() => {
+    function onKeyDown(e) {
+      const mod = e.ctrlKey || e.metaKey
+      if (!mod) return
+      const k = e.key.toLowerCase()
+      if (k === 'z') {
+        e.preventDefault()
+        dispatch({ type: e.shiftKey ? 'redo' : 'undo' })
+      } else if (k === 'y') {
+        e.preventDefault()
+        dispatch({ type: 'redo' })
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -127,12 +171,9 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
     }
   }
 
-  const hasChanges = !!savedForm && JSON.stringify(form) !== JSON.stringify(savedForm)
-
-  function undoChanges() {
-    setForm(JSON.parse(JSON.stringify(savedForm)))
-    if (fileInputRef.current) fileInputRef.current.value = ''
-  }
+  const canUndo = index > 0
+  const canRedo = index < history.length - 1
+  const hasChanges = history.length > 0 && JSON.stringify(form) !== JSON.stringify(history[0])
 
   if (loading) {
     return <div className="text-zinc-400 text-sm py-8">Loading...</div>
@@ -151,6 +192,28 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
             Unsaved changes
           </span>
         )}
+        <span className="ml-auto flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => dispatch({ type: 'undo' })}
+            disabled={!canUndo}
+            title="Undo (Ctrl+Z)"
+            aria-label="Undo"
+            className="w-9 h-9 rounded-lg border border-zinc-300 dark:border-zinc-600 flex items-center justify-center text-base text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-not-allowed"
+          >
+            ↩
+          </button>
+          <button
+            type="button"
+            onClick={() => dispatch({ type: 'redo' })}
+            disabled={!canRedo}
+            title="Redo (Ctrl+Shift+Z)"
+            aria-label="Redo"
+            className="w-9 h-9 rounded-lg border border-zinc-300 dark:border-zinc-600 flex items-center justify-center text-base text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-not-allowed"
+          >
+            ↪
+          </button>
+        </span>
       </h1>
 
       <form onSubmit={handleSubmit} className="max-w-2xl space-y-5">
@@ -311,15 +374,6 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
           >
             {saving ? 'Saving...' : slug ? 'Save Changes' : 'Create'}
           </button>
-          {hasChanges && (
-            <button
-              type="button"
-              onClick={undoChanges}
-              className="px-6 py-2.5 border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 font-medium rounded-lg transition-colors text-sm hover:bg-zinc-50 dark:hover:bg-zinc-700"
-            >
-              ↩ Undo changes
-            </button>
-          )}
           <Link
             href={backHref || `/admin/${type}`}
             className="px-6 py-2.5 border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 font-medium rounded-lg transition-colors text-sm hover:bg-zinc-50 dark:hover:bg-zinc-700"

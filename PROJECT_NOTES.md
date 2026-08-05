@@ -98,7 +98,7 @@ Theme: dark/light follows OS `prefers-color-scheme` only. There is **no manual d
 - `Pagination.js`, `SortSelect.js` — listing-page helpers.
 - `ProductCard.js`, `LivestockCard.js`, `ProjectCard.js` — card grids (first image = thumbnail, cover badge handled via image order).
 - `AdminItemForm.js` — generic create/edit form engine. Field types: `text`, `textarea`, `richtext`, `select` (with `dependsOn` subcategory filtering), `number`, `array`, `tags`, `checkbox`, `images`. Images: multi-upload, **hover ★ sets as cover** (reorders image to index 0), "Cover" badge, delete per image.
-  - **Undo:** the form keeps a `savedForm` snapshot (last loaded/saved state). When any unsaved edit is detected (JSON compare) it shows an amber "Unsaved changes" badge next to the title and a **"↩ Undo changes"** button beside Save that reverts all fields to the snapshot. Applies to products, livestock, and projects.
+  - **Undo/Redo:** built on a `useReducer` history stack (max 100 snapshots, stored alongside the form). Every field change pushes a snapshot; the **↩ Undo / ↪ Redo** buttons are always visible in the title bar (disabled when nothing to undo/redo), with an amber "Unsaved changes" badge when the form differs from its loaded baseline. Keyboard: `Ctrl/Cmd+Z` undo, `Ctrl/Cmd+Shift+Z` or `Ctrl/Cmd+Y` redo (page-wide, replaces native field undo). Applies to products, livestock, and projects.
 - `AdminItemList.js` — admin table with delete links.
 - `RichTextEditor.js` — contentEditable WYSIWYG (bold/italic/underline/strike, H2/H3/¶, bullet/numbered lists, link/unlink, clear). Uses deprecated `document.execCommand`. Output sanitized via `lib/sanitize.js`.
 - `RichContent.js` — server renderer: plain text becomes `<p>`; HTML rendered via `dangerouslySetInnerHTML` after sanitize. Requires `.rich-content` CSS.
@@ -208,8 +208,8 @@ All static pages under `app/utilities/`, share `utilityUi.js`. Index list in `ap
 
 ## 12. Git History — Feature Milestones (most recent first)
 
+- (next) Undo/redo (buttons + Ctrl+Z/Ctrl+Y) in admin edit forms
 - (next) Similar products/livestock on detail pages
-- (next) Undo option for product/livestock/project edit forms
 - `8a3779a` Zoom home projects images to 115% on hover
 - `92fabd6` Add group by temperament to livestock listing
 - `e5c6daf` Crossfade between carousel images
