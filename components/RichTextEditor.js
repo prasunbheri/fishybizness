@@ -50,9 +50,10 @@ function ToolbarButton({ onClick, active, title, disabled, children }) {
 export default function RichTextEditor({ value = '', onChange, placeholder = '', minHeight = '140px', revision = 0 }) {
   const [initialValue] = useState(() => value)
   const [sizeOpen, setSizeOpen] = useState(false)
-  const [sizeValue, setSizeValue] = useState('')
   const [colorOpen, setColorOpen] = useState(false)
   const popupRef = useRef(null)
+  const sizePopupRef = useRef(null)
+  const savedSelRef = useRef(null)
 
   const editor = useEditor(
     {
@@ -85,7 +86,7 @@ export default function RichTextEditor({ value = '', onChange, placeholder = '',
       onUpdate({ editor }) {
         onChange(sanitizeHtml(editor.getHTML()))
       },
-      immediatelyRender: false,
+      immediatelyRender: true,
     },
     []
   )
@@ -135,7 +136,8 @@ export default function RichTextEditor({ value = '', onChange, placeholder = '',
   useEffect(() => {
     if (!sizeOpen && !colorOpen) return
     function onDocMouseDown(e) {
-      if (popupRef.current && !popupRef.current.contains(e.target)) {
+      const inside = [popupRef, sizePopupRef].some(r => r.current && r.current.contains(e.target))
+      if (!inside) {
         setSizeOpen(false)
         setColorOpen(false)
       }
@@ -157,22 +159,36 @@ export default function RichTextEditor({ value = '', onChange, placeholder = '',
     editor.view.focus()
   }
 
+  function rememberSelection() {
+    savedSelRef.current = { from: editor.state.selection.from, to: editor.state.selection.to }
+  }
+
+  function runWithSelection(builder) {
+    let chain = editor.chain().focus()
+    if (savedSelRef.current) {
+      chain = chain.setTextSelection(savedSelRef.current)
+    }
+    builder(chain).run()
+    editor.view.focus()
+  }
+
   function setLink() {
+    rememberSelection()
     const prev = editor.getAttributes('link').href || ''
     const url = window.prompt('Enter link URL (https://...)', prev)
     if (url === null) return
     if (!url.trim()) {
-      editor.chain().focus().extendMarkRange('link').unsetLink().run()
+      runWithSelection(c => c.extendMarkRange('link').unsetLink())
       return
     }
     const href = /^[a-z]+:\/\//i.test(url.trim()) ? url.trim() : `https://${url.trim()}`
-    editor.chain().focus().extendMarkRange('link').setLink({ href }).run()
+    runWithSelection(c => c.extendMarkRange('link').setLink({ href }))
   }
 
   function applyFontSize(px) {
     const n = Math.round(Number(px))
     if (!n || n < 8 || n > 72) return
-    editor.chain().focus().setFontSize(`${n}px`).run()
+    runWithSelection(c => c.setFontSize(`${n}px`))
     setSizeOpen(false)
   }
 
@@ -184,10 +200,11 @@ export default function RichTextEditor({ value = '', onChange, placeholder = '',
         <select
           className={selectCls}
           value={state.blockType}
+          onMouseDown={rememberSelection}
           onChange={e => {
             const v = e.target.value
-            if (v === 'paragraph') editor.chain().focus().setParagraph().run()
-            else editor.chain().focus().toggleHeading({ level: Number(v.slice(-1)) }).run()
+            if (v === 'paragraph') runWithSelection(c => c.setParagraph())
+            else runWithSelection(c => c.toggleHeading({ level: Number(v.slice(-1)) }))
           }}
           aria-label="Block type"
         >
@@ -224,7 +241,7 @@ export default function RichTextEditor({ value = '', onChange, placeholder = '',
           <ToolbarButton
             title="Text color"
             active={!!state.color}
-            onClick={() => { setColorOpen(o => !o); setSizeOpen(false) }}
+            onClick={() => { rememberSelection(); setColorOpen(o => !o); setSizeOpen(false) }}
           >
             <span className="flex flex-col items-center leading-none">
               <span className="text-[10px]">A</span>
@@ -239,7 +256,8 @@ export default function RichTextEditor({ value = '', onChange, placeholder = '',
                     key={c}
                     type="button"
                     title={c}
-                    onClick={() => { editor.chain().focus().setColor(c).run(); setColorOpen(false) }}
+                    onMouseDown={e => e.preventDefault()}
+                    onClick={() => { runWithSelection(c => c.setColor(color)); setColorOpen(false) }}
                     className={`w-6 h-6 rounded-full border border-black/10 ${state.color === c ? 'ring-2 ring-cyan-500 ring-offset-1' : ''}`}
                     style={{ background: c }}
                   />
@@ -249,13 +267,14 @@ export default function RichTextEditor({ value = '', onChange, placeholder = '',
                 <input
                   type="color"
                   value={/^#[0-9a-f]{6}$/i.test(state.color) ? state.color : '#000000'}
-                  onChange={e => editor.chain().focus().setColor(e.target.value).run()}
+                  onChange={e => runWithSelection(c => c.setColor(e.target.value))}
                   className="w-7 h-7 rounded border border-zinc-300 dark:border-zinc-600 bg-transparent p-0"
                   title="Custom color"
                 />
                 <button
                   type="button"
-                  onClick={() => { editor.chain().focus().unsetColor().run(); setColorOpen(false) }}
+                  onMouseDown={e => e.preventDefault()}
+                  onClick={() => { runWithSelection(c => c.unsetColor()); setColorOpen(false) }}
                   className="ml-auto px-2 py-1 rounded text-xs text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700"
                 >
                   Reset
@@ -268,10 +287,11 @@ export default function RichTextEditor({ value = '', onChange, placeholder = '',
         <select
           className={selectCls}
           value={state.fontFamily}
+          onMouseDown={rememberSelection}
           onChange={e => {
             const v = e.target.value
-            if (v) editor.chain().focus().setFontFamily(v).run()
-            else editor.chain().focus().unsetFontFamily().run()
+            if (v) runWithSelection(c => c.setFontFamily(v))
+            else runWithSelection(c => c.unsetFontFamily())
           }}
           aria-label="Font family"
         >
@@ -282,37 +302,18 @@ export default function RichTextEditor({ value = '', onChange, placeholder = '',
           ))}
         </select>
 
-        <div className="relative">
-          <ToolbarButton title="Font size" active={!!state.fontSize} onClick={() => { setSizeOpen(o => !o); setColorOpen(false) }}>
+        <div className="relative" ref={sizePopupRef}>
+          <ToolbarButton title="Font size" active={!!state.fontSize} onClick={() => { rememberSelection(); setSizeOpen(o => !o); setColorOpen(false) }}>
             <span className="text-xs w-auto px-1">T {currentSize}</span>
           </ToolbarButton>
           {sizeOpen && (
-            <div className="absolute right-0 top-full mt-1 z-20 w-44 rounded-lg border border-zinc-200 dark:border-zinc-600 bg-white dark:bg-zinc-800 p-2 shadow-lg">
-              <div className="flex items-center gap-1 mb-2">
-                <input
-                  type="number"
-                  min="8"
-                  max="72"
-                  value={sizeValue}
-                  placeholder={currentSize}
-                  onChange={e => setSizeValue(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter') applyFontSize(sizeValue || currentSize) }}
-                  className="w-16 px-2 py-1 rounded border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 text-zinc-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                />
-                <span className="text-xs text-zinc-500 dark:text-zinc-400">px</span>
-                <button
-                  type="button"
-                  onClick={() => applyFontSize(sizeValue || currentSize)}
-                  className="ml-auto px-2 py-1 rounded bg-cyan-500 hover:bg-cyan-400 text-zinc-900 text-xs font-semibold transition-colors"
-                >
-                  Apply
-                </button>
-              </div>
+            <div className="absolute right-0 top-full mt-1 z-20 w-48 rounded-lg border border-zinc-200 dark:border-zinc-600 bg-white dark:bg-zinc-800 p-2 shadow-lg">
               <div className="flex flex-wrap gap-1">
                 {FONT_SIZES.map(n => (
                   <button
                     key={n}
                     type="button"
+                    onMouseDown={e => e.preventDefault()}
                     onClick={() => applyFontSize(n)}
                     className={`w-8 h-7 rounded text-xs transition-colors ${String(n) === currentSize
                       ? 'bg-cyan-500 text-zinc-900 font-semibold'

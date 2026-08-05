@@ -1,9 +1,18 @@
 'use client'
 
 import { useState, useEffect, useRef, useReducer } from 'react'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import RichTextEditor from './RichTextEditor'
+
+const RichTextEditor = dynamic(() => import('./RichTextEditor'), {
+  ssr: false,
+  loading: () => (
+    <div className="rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 px-3 py-2 text-sm text-zinc-400">
+      Loading editor...
+    </div>
+  ),
+})
 
 const MAX_HISTORY = 100
 
