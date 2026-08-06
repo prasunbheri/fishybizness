@@ -84,7 +84,7 @@ export default function RichTextEditor({ value = '', onChange, placeholder = '',
         },
       },
       onUpdate({ editor }) {
-        onChange(sanitizeHtml(editor.getHTML()))
+        if (!editor.isDestroyed) onChange(sanitizeHtml(editor.getHTML()))
       },
       immediatelyRender: true,
     },
@@ -126,7 +126,7 @@ export default function RichTextEditor({ value = '', onChange, placeholder = '',
   })
 
   useEffect(() => {
-    if (!editor) return
+    if (!editor || editor.isDestroyed) return
     const html = sanitizeHtml(value || '')
     if (editor.getHTML() !== html) {
       editor.commands.setContent(html, { emitUpdate: false })
