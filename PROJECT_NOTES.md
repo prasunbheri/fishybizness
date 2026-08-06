@@ -209,6 +209,9 @@ All static pages under `app/utilities/`, share `utilityUi.js`. Index list in `ap
 ## 12. Git History — Feature Milestones (most recent first)
 
 - (next) Similar products/livestock on detail pages
+- `8750eba` Fix live "This page couldn't load" crash on admin edit pages — the `revision`/value-sync effect called `editor.getHTML()` on a destroyed editor (`this.schema = null` → `DOMSerializer.fromSchema(null).cached` threw). Guarded `revision` effect with `editor.isDestroyed` and `onUpdate` with `editor.isDestroyed` before `getHTML()`.
+- `19aa4b3` Notes: font-size fix + client-only editor load
+- `8cbe42e` Document TipTap rich text editor in notes
 - `231b232` Fix font size/color selection loss (popup-ref bug ate chip clicks) + instant font-size presets (no Apply button) + client-only editor load (`immediatelyRender: true`)
 - `5fd7a66` Rewrite rich text editor on TipTap (headings, color, font family/size, align, lists, links, code blocks, highlight) — replaces `document.execCommand` editor
 - `2e4194e` Font size (px number input + presets) in rich text editor
