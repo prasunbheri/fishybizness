@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "smoke": "node scripts/smoke-admin.mjs"
   },
   "dependencies": {
+    "@sentry/nextjs": "^10.69.0",
     "@tiptap/extension-highlight": "^3.29.2",
     "@tiptap/extension-placeholder": "^3.29.2",
     "@tiptap/extension-text-align": "^3.29.2",
@@ -27,6 +29,7 @@
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "16.2.12",
+    "puppeteer-core": "^25.5.0",
     "tailwindcss": "^4"
   }
 }

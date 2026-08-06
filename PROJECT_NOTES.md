@@ -34,6 +34,7 @@ Memory file for future AI sessions. Read this before touching the code so nothin
 ### Env vars (`.env.local`, gitignored)
 - `ADMIN_USERNAME`, `ADMIN_PASSWORD` — admin login credentials.
 - `ADMIN_SECRET` — signs session cookies. **Warning:** `lib/auth.js` falls back to `'default-secret'` if unset — keep it set in production.
+- `SENTRY_DSN` (server/edge) + `NEXT_PUBLIC_SENTRY_DSN` (client) — Sentry error monitoring. **Inert until set** — all Sentry configs (`sentry.*.config.js`, `instrumentation*.js`) guard on the DSN, so the app builds/runs fine without it.
 - `.env.example` is committed (gitignore exception); `.env.local` is NOT.
 
 ### Full deploy flow (always after committing)
@@ -47,8 +48,12 @@ Memory file for future AI sessions. Read this before touching the code so nothin
    ```
 3. On server: `cd /home/ubuntu/fishybizness && npm run build && pm2 restart fishybizness --update-env`
 4. Verify: `curl -s -o /dev/null -w '%{http_code}' https://fishybiz.duckdns.org/` (expect 200).
+5. **Run the smoke test against the live site** before announcing anything:
+   `BASE_URL=https://fishybiz.duckdns.org ADMIN_USER=admin ADMIN_PASS=fishybizness2024 npm run smoke`
 
 ### Local smoke test
+- `npm run smoke` — automated puppeteer smoke test (`scripts/smoke-admin.mjs`): logs into admin, discovers real items via `/api/admin/<type>`, then loads **every** `<type>/<slug>` edit page + `<type>/new` create page and fails on any `pageerror` or crash screen. This catches the destroyed-editor-class runtime crashes that `npm run build` cannot.
+- Needs `CHROME_PATH` (default `/usr/bin/google-chrome`); `BASE_URL`, `ADMIN_USER`, `ADMIN_PASS` env vars override defaults (`http://localhost:3001`, `admin`/`fishybizness2024`).
 - `npm run build`, then `npm run start`, then curl `http://localhost:3000/<route>`.
 - Kill server with `pkill -f 'next-server'` — this is slow; confirm with `ss -tlnp | grep :3000`.
 - Local DB is `fishybizness.db` (test data). Never modify the production DB.
@@ -203,12 +208,16 @@ All static pages under `app/utilities/`, share `utilityUi.js`. Index list in `ap
 12. **Grouped livestock view disables pagination** (shows all items in sections).
 13. `revalidate = 0` used on home + list/detail pages → dynamic rendering; utilities are static.
 14. `npm run lint` = `eslint` (no fix flag configured in script).
+15. **This Next.js fork (16.2.12) adds `unstable_catchError` from `next/error`** — component-level error boundaries (used in `components/ErrorBoundary.js`). `error.js` / `global-error.js` receive `unstable_retry` (preferred over `reset`) per the fork's docs. Error boundaries only catch render errors, not event-handler errors.
+16. **The admin edit-page crash class** (destroyed TipTap editor → `getHTML()` threw `Cannot read properties of null (reading 'cached')`): always guard `editor.isDestroyed` before `editor.getHTML()`/`setContent()` in effects/onUpdate. `npm run smoke` + the ErrorBoundary around `AdminItemForm` now contain this class of bug.
+17. **Sentry** wraps `next.config.mjs` with `withSentryConfig` — inert without `SENTRY_DSN`/`NEXT_PUBLIC_SENTRY_DSN`. Client DSN must be `NEXT_PUBLIC_` or it won't be inlined into browser bundles. `instrumentation-client.js` must export `onRouterTransitionStart = Sentry.captureRouterTransitionStart` or the build warns.
 
 ---
 
 ## 12. Git History — Feature Milestones (most recent first)
 
 - (next) Similar products/livestock on detail pages
+- Add guardrails: `npm run smoke` admin smoke test (`scripts/smoke-admin.mjs`), `ErrorBoundary` (via `unstable_catchError`) around `AdminItemForm`, `app/error.js` + `app/global-error.js` fallbacks, Sentry error monitoring (inert until `SENTRY_DSN` set)
 - `8750eba` Fix live "This page couldn't load" crash on admin edit pages — the `revision`/value-sync effect called `editor.getHTML()` on a destroyed editor (`this.schema = null` → `DOMSerializer.fromSchema(null).cached` threw). Guarded `revision` effect with `editor.isDestroyed` and `onUpdate` with `editor.isDestroyed` before `getHTML()`.
 - `19aa4b3` Notes: font-size fix + client-only editor load
 - `8cbe42e` Document TipTap rich text editor in notes

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useReducer } from 'react'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import ErrorBoundary from './ErrorBoundary'
 
 const RichTextEditor = dynamic(() => import('./RichTextEditor'), {
   ssr: false,
@@ -189,7 +190,8 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
   }
 
   return (
-    <div>
+    <ErrorBoundary>
+      <div>
       <Link href={backHref || `/admin/${type}`} className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-cyan-600 dark:hover:text-cyan-400 mb-6 transition-colors">
         &larr; Back
       </Link>
@@ -392,6 +394,7 @@ export default function AdminItemForm({ type, slug, title, fields, backHref }) {
           </Link>
         </div>
       </form>
-    </div>
+      </div>
+    </ErrorBoundary>
   )
 }
