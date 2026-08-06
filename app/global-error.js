@@ -11,19 +11,24 @@ export default function GlobalError({ error, unstable_retry }) {
 
   return (
     <html lang="en">
-      <body className="antialiased">
-        <div className="max-w-lg mx-auto my-24 px-4 text-center">
-          <h1 className="text-3xl font-bold text-zinc-800 dark:text-white mb-3">Something went wrong</h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-2 break-words">{error.message}</p>
-          <p className="text-xs text-zinc-400 dark:text-zinc-500 mb-6">
+      <head>
+        <style>{`
+          body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:#fafafa;color:#27272a}
+          .wrap{max-width:32rem;margin:6rem auto;padding:0 1rem;text-align:center}
+          h1{font-size:1.75rem;font-weight:700;margin:0 0 .5rem}
+          p{margin:0 0 .25rem}
+          .dim{color:#71717a;font-size:.75rem;margin-bottom:1.5rem}
+          button{background:#06b6d4;color:#18181b;border:0;padding:.625rem 1.5rem;border-radius:.5rem;font-weight:600;cursor:pointer}
+        `}</style>
+      </head>
+      <body>
+        <div className="wrap">
+          <h1>Something went wrong</h1>
+          <p>{error.message}</p>
+          <p className="dim">
             {error.digest ? `Error ID: ${error.digest}` : 'An unexpected error occurred.'}
           </p>
-          <button
-            onClick={() => unstable_retry()}
-            className="px-6 py-2.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-zinc-900 font-medium transition-colors"
-          >
-            Try again
-          </button>
+          <button onClick={() => unstable_retry()}>Try again</button>
         </div>
       </body>
     </html>

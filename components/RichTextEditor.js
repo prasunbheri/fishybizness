@@ -154,11 +154,6 @@ export default function RichTextEditor({ value = '', onChange, placeholder = '',
     )
   }
 
-  function run(cb) {
-    cb(editor.chain().focus())
-    editor.view.focus()
-  }
-
   function rememberSelection() {
     savedSelRef.current = { from: editor.state.selection.from, to: editor.state.selection.to }
   }
@@ -257,7 +252,7 @@ export default function RichTextEditor({ value = '', onChange, placeholder = '',
                     type="button"
                     title={c}
                     onMouseDown={e => e.preventDefault()}
-                    onClick={() => { runWithSelection(c => c.setColor(color)); setColorOpen(false) }}
+                    onClick={() => { runWithSelection(chain => chain.setColor(c)); setColorOpen(false) }}
                     className={`w-6 h-6 rounded-full border border-black/10 ${state.color === c ? 'ring-2 ring-cyan-500 ring-offset-1' : ''}`}
                     style={{ background: c }}
                   />
