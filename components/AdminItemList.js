@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import BulkUploadButton from './BulkUploadButton'
 
 export default function AdminItemList({ type, title, icon, fields }) {
   const [items, setItems] = useState([])
@@ -42,12 +43,15 @@ export default function AdminItemList({ type, title, icon, fields }) {
           <span className="text-2xl">{icon}</span>
           <h1 className="text-2xl font-bold text-zinc-800 dark:text-white mt-1">{title}</h1>
         </div>
-        <Link
-          href={`/admin/${type}/new`}
-          className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-zinc-900 font-medium rounded-lg text-sm transition-colors"
-        >
-          + Add New
-        </Link>
+        <div className="flex items-center gap-2">
+          <BulkUploadButton type={type} onUploaded={load} />
+          <Link
+            href={`/admin/${type}/new`}
+            className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-zinc-900 font-medium rounded-lg text-sm transition-colors"
+          >
+            + Add New
+          </Link>
+        </div>
       </div>
 
       {loading ? (

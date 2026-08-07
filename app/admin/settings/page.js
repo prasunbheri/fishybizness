@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import AdminBulkUpload from '@/components/AdminBulkUpload'
 
 const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 
@@ -136,8 +135,6 @@ export default function AdminSettings() {
           {saving ? 'Saving...' : 'Save Changes'}
         </button>
       </div>
-
-      <AdminBulkUpload />
     </div>
   )
 }
