@@ -145,7 +145,8 @@ All static pages under `app/utilities/`, share `utilityUi.js`. Index list in `ap
 - **Livestock / Products / Projects** — list, create, edit (AdminItemForm + richtext), delete.
 - **Categories** — categories + subcategories CRUD (rename cascades to products).
 - **Backup** — export/restore full DB to Excel (`exceljs`), all tables.
-- **Settings** — shop info (name, tagline, description, address, hours, socials).
+- **Settings** — shop info (name, tagline, description, address, hours, socials). **Also hosts the Bulk Upload section** (`components/AdminBulkUpload.js`): one card per type (Products/Livestock/Projects) with a `.xlsx` template download + upload form + per-row result report.
+- **Bulk Upload** — `app/api/admin/bulk/[type]` (POST) parses an Excel sheet and inserts rows via `bulkCreateItems` (`lib/admin-data.js`), all in a single transaction. `app/api/admin/bulk/[type]/template` (GET) downloads the template with headers + an Instructions sheet. Column headers are matched case/space-insensitively; a "name/title" column is required. Behavior: rows with empty required field → skipped; duplicate name within file → skipped; name whose slug already exists in DB → skipped. Returns `{ type, total, created: [{row,name,slug}], skipped: [{row,name,reason}] }`. `showPrice` accepts 1/0/yes/no (default 1), `quantity` coerced to int (default 0), `images`/`tags` split on commas/newlines into JSON arrays (first image = cover). Revalidates `/` + `/{type}`.
 
 ---
 
@@ -158,6 +159,7 @@ All static pages under `app/utilities/`, share `utilityUi.js`. Index list in `ap
 | `/admin/categories`, `/admin/subcategories` (+ `/[name]`) | Category/subcategory CRUD. |
 | `/admin/hero` | Read/update hero (auth). |
 | `/admin/backup` | Excel export/import (auth). |
+| `/admin/bulk/[type]` + `/template` | Bulk create from uploaded Excel + `.xlsx` template download (auth). |
 | `/admin/shop` | Shop info update (auth). |
 | `/upload` | Saves files to `public/images/{type}/` as `{timestamp}-{rand}{ext}`, returns public paths. |
 | `/view` | Increments `views` column. |
@@ -177,7 +179,7 @@ All static pages under `app/utilities/`, share `utilityUi.js`. Index list in `ap
   - `seedIfEmpty()` seeds each table **only if empty** from `content/*.json`. Never re-seeds. Delete the `.db` file to force a re-seed.
   - WAL sidecar files (`*.db-wal`, `*.db-shm`) are normal — safe to delete only while the app is stopped.
 - `lib/data.js` — public reads (products, livestock, projects, categories, shop info, dashboard stats).
-- `lib/admin-data.js` — admin CRUD + backup/restore + `slugify`. Schemas map columns/json cols per type.
+- `lib/admin-data.js` — admin CRUD + backup/restore + `slugify` + `bulkCreateItems`/`bulkColumns`. Schemas map columns/json cols per type. `createItem` delegates to a sync `insertItem(db, cfg, data)` so the bulk importer can run inserts inside one transaction.
 - `lib/auth.js` — token create/verify, `requireAdmin`.
 - `lib/sanitize.js` — `sanitizeHtml` (strips script/iframe/style/object/embed/frame, `on*` handlers, `javascript:`/`data:` URLs), `stripTags`.
 - `lib/image-loader.js` — global image loader with **max 4 concurrent** loads + queue.
@@ -215,6 +217,8 @@ All static pages under `app/utilities/`, share `utilityUi.js`. Index list in `ap
 ---
 
 ## 12. Git History — Feature Milestones (most recent first)
+
+- Bulk upload for products/livestock/projects from Excel (admin Settings: templates + upload + per-row results; `app/api/admin/bulk/[type]` + `/template`; `bulkCreateItems` in `lib/admin-data.js`)
 
 - (next) Similar products/livestock on detail pages
 - Add guardrails: `npm run smoke` admin smoke test (`scripts/smoke-admin.mjs`), `ErrorBoundary` (via `unstable_catchError`) around `AdminItemForm`, `app/error.js` + `app/global-error.js` fallbacks, Sentry error monitoring (inert until `SENTRY_DSN` set)
