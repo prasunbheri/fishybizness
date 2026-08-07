@@ -146,7 +146,7 @@ All static pages under `app/utilities/`, share `utilityUi.js`. Index list in `ap
 - **Categories** — categories + subcategories CRUD (rename cascades to products).
 - **Backup** — export/restore full DB to Excel (`exceljs`), all tables.
 - **Settings** — shop info (name, tagline, description, address, hours, socials).
-- **Bulk Upload** — each list page (Products/Livestock/Projects) has an "⬆ Bulk Upload" button next to "+ Add New" (`components/BulkUploadButton.js` → modal with `.xlsx` template download + upload form + per-row result report). Backend: `app/api/admin/bulk/[type]` (POST) parses the Excel sheet and inserts rows via `bulkCreateItems` (`lib/admin-data.js`), all in a single transaction. `app/api/admin/bulk/[type]/template` (GET) downloads the template with headers + an Instructions sheet. Column headers are matched case/space-insensitively; a "name/title" column is required. Behavior: rows with empty required field → skipped; duplicate name within file → skipped; name whose slug already exists in DB → skipped. Returns `{ type, total, created: [{row,name,slug}], skipped: [{row,name,reason}] }`. `showPrice` accepts 1/0/yes/no (default 1), `quantity` coerced to int (default 0), `images`/`tags` split on commas/newlines into JSON arrays (first image = cover). Revalidates `/` + `/{type}`; the list reloads after a successful upload.
+- **Bulk Upload** — each list page (Products/Livestock/Projects) has an "⬆ Bulk Upload" button next to "+ Add New" (`components/BulkUploadButton.js` → modal with `.xlsx` template download + upload form + per-row result report). Backend: `app/api/admin/bulk/[type]` (POST) parses the Excel sheet and inserts rows via `bulkCreateItems` (`lib/admin-data.js`), all in a single transaction. `app/api/admin/bulk/[type]/template` (GET) downloads the template with headers + an Instructions sheet. **Templates include 2 grey italic `[Example]` rows per type; `isExampleRow` makes the importer ignore any row whose name/title starts with `[Example]`** (silently — not counted in totals; an examples-only file errors with a hint). Column headers are matched case/space-insensitively; a "name/title" column is required. Behavior: rows with empty required field → skipped; duplicate name within file → skipped; name whose slug already exists in DB → skipped. Returns `{ type, total, created: [{row,name,slug}], skipped: [{row,name,reason}] }`. `showPrice` accepts 1/0/yes/no (default 1), `quantity` coerced to int (default 0), `images`/`tags` split on commas/newlines into JSON arrays (first image = cover). Revalidates `/` + `/{type}`; the list reloads after a successful upload.
 
 ---
 
@@ -217,6 +217,8 @@ All static pages under `app/utilities/`, share `utilityUi.js`. Index list in `ap
 ---
 
 ## 12. Git History — Feature Milestones (most recent first)
+
+- Bulk upload templates get grey `[Example]` rows; importer ignores any `[Example]`-prefixed rows on upload
 
 - Move bulk upload UI from Settings to the Products/Livestock/Projects list pages (`BulkUploadButton` modal in `AdminItemList` header)
 

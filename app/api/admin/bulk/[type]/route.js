@@ -1,5 +1,5 @@
 import { checkAuth } from '@/lib/auth'
-import { bulkCreateItems, bulkColumns } from '@/lib/admin-data'
+import { bulkCreateItems, bulkColumns, isExampleRow } from '@/lib/admin-data'
 import ExcelJS from 'exceljs'
 import { revalidatePath } from 'next/cache'
 
@@ -67,11 +67,15 @@ export async function POST(request, { params }) {
       if (!empty) rows.push(obj)
     })
 
+    const realRows = rows.filter(r => !isExampleRow(r))
     if (rows.length === 0) {
       return Response.json({ error: 'No data rows found in the sheet' }, { status: 400 })
     }
+    if (realRows.length === 0) {
+      return Response.json({ error: 'No data rows found — the sheet only contains example rows. Add your own rows below them.' }, { status: 400 })
+    }
 
-    const result = await bulkCreateItems(type, rows)
+    const result = await bulkCreateItems(type, realRows)
     revalidatePath('/', 'page')
     revalidatePath(`/${type}`, 'page')
     log('POST', type, `created=${result.created.length} skipped=${result.skipped.length}`, { total: result.total })

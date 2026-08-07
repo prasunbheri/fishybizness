@@ -37,6 +37,21 @@ const columnNotes = {
   },
 }
 
+const exampleRows = {
+  products: [
+    ['[Example] API Freshwater Master Test Kit', '24.99', 'yes', 'Test Kits', 'Water Testing', 'Liquid test kit for ammonia, nitrite, nitrate and pH.', 'testkit.jpg, https://example.com/testkit-2.png', 'https://example.com/api-master-kit', 12],
+    ['[Example] Fluval AquaClear Power Filter', '39.50', 'no', 'Filtration', 'Filters', 'Hang-on-back filter for tanks up to 75 gallons.', 'aqc.png', '', 4],
+  ],
+  livestock: [
+    ['[Example] Neon Tetra', 'Paracheirodon innesi', 'Fish', 'Beginner', '10 gallons', '1.5 inches', 'Peaceful', '1.99', 'yes', 'Small schooling fish — keep in groups of 6+.', 'neon-tetra.jpg', 20],
+    ['[Example] Java Fern', 'Microsorum pteropus', 'Plant', 'Easy', '5 gallons', '12 inches', 'Low light', '4.50', 'yes', 'Attach to wood or rock, do not bury the rhizome.', 'java-fern.jpg', 15],
+  ],
+  projects: [
+    ['[Example] 20 Gallon Planted Shrimp Tank', '2024-06-15', 'A low-tech planted tank built for Neocaridina shrimp.', 'tank-front.jpg, tank-detail.jpg', 'planted, shrimp, low-tech'],
+    ['[Example] 60G Nano Reef Rebuild', '2024-08-01', 'A mixed reef with soft corals and two clownfish.', 'reef-1.jpg', 'reef, nano, corals'],
+  ],
+}
+
 function log(msg) {
   console.error(`[bulk-template] ${msg}`)
 }
@@ -63,6 +78,14 @@ export async function GET(request, { params }) {
   })
   ws.views = [{ state: 'frozen', ySplit: 1 }]
 
+  for (const ex of exampleRows[type] || []) {
+    const r = ws.addRow(ex)
+    r.font = { italic: true, color: { argb: 'FF6B7280' } }
+    r.eachCell(cell => {
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF3F4F6' } }
+    })
+  }
+
   const notes = columnNotes[type] || {}
   const is = wb.addWorksheet('Instructions')
   is.columns = [{ width: 22 }, { width: 80 }]
@@ -73,7 +96,9 @@ export async function GET(request, { params }) {
     is.addRow([c, notes[c] || ''])
   }
   is.addRow(['', ''])
-  is.addRow(['Note', 'Fill data starting from row 2. Do not rename or remove the header row.'])
+  is.addRow(['Note', 'The grey italic rows at the top of the sheet are EXAMPLES — delete them and add your own data starting from the next row.'])
+  is.addRow(['Note', 'Rows whose first column starts with [Example] are always ignored on upload, so you can also just leave them in place.'])
+  is.addRow(['Note', 'Do not rename or remove the header row.'])
   is.addRow(['Note', 'Rows with an empty required column are skipped and reported after upload.'])
   is.addRow(['Note', 'Uploading the same file twice will skip rows that already exist.'])
 
