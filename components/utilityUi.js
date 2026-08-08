@@ -15,10 +15,9 @@ export function UtilityHeader({ title, desc }) {
         href="/utilities"
         className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-cyan-600 dark:hover:text-cyan-400 mb-6 transition-colors"
       >
-        &larr; All utilities
+        &larr; Back to utilities
       </Link>
-      <span className="text-xs uppercase tracking-widest text-cyan-600 dark:text-cyan-400 font-medium">Utility</span>
-      <h1 className="text-3xl sm:text-4xl font-bold mt-1 mb-3 text-zinc-800 dark:text-white">{title}</h1>
+      <h1 className="text-3xl sm:text-4xl font-bold mb-3 text-zinc-800 dark:text-white">{title}</h1>
       <p className="text-zinc-500 dark:text-zinc-400 max-w-xl mb-10 text-sm">{desc}</p>
     </AnimatedSection>
   )
